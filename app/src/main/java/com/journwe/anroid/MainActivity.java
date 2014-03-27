@@ -5,9 +5,15 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 public class MainActivity extends Activity {
@@ -34,10 +40,10 @@ public class MainActivity extends Activity {
 
         Log.i("login", "start login");
 
-//		EditText editUser = (EditText) findViewById(R.id.editUser);
-//		String user = editUser.getText().toString();
-//		EditText editPass = (EditText) findViewById(R.id.editPass);
-//		String pass = editPass.getText().toString();
+		EditText editUser = (EditText) findViewById(R.id.editUser);
+		String user = editUser.getText().toString();
+		EditText editPass = (EditText) findViewById(R.id.editPass);
+		String pass = editPass.getText().toString();
 
         OAuthService service = new ServiceBuilder()
                 .provider(FacebookApi.class)
@@ -47,18 +53,18 @@ public class MainActivity extends Activity {
 
         Log.i("login", "still running");
 
-//		Token requestToken = service.getRequestToken();
-//		String authUrl = service.getAuthorizationUrl(requestToken);
-//
-//		Verifier v = new Verifier("verifier you got from the user");
-//		Token accessToken = service.getAccessToken(requestToken, v);
-//
-//		OAuthRequest request = new OAuthRequest(Verb.GET,
-//				"https://graph.facebook.com/me");
-//		service.signRequest(accessToken, request); // the access token from step
-//													// 4
-//		Response response = request.send();
-//		editUser.setText(response.getBody());
+		Token requestToken = service.getRequestToken();
+		String authUrl = service.getAuthorizationUrl(requestToken);
+
+		Verifier v = new Verifier("verifier you got from the user");
+		Token accessToken = service.getAccessToken(requestToken, v);
+
+		OAuthRequest request = new OAuthRequest(Verb.GET,
+				"https://graph.facebook.com/me");
+		service.signRequest(accessToken, request); // the access token from step
+													// 4
+		Response response = request.send();
+		editUser.setText(response.getBody());
     }
 
 }
