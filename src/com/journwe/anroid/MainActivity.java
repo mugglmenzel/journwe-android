@@ -52,8 +52,6 @@ public class MainActivity extends Activity {
 				.apiKey("515340035175937")
 				.apiSecret("b5788518d689a6613a581722c98f4cf4")
 				.build();
-
-		
 		
 		Log.i("login", "still running");
 
