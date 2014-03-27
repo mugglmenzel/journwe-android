@@ -52,9 +52,9 @@
                 </string>
                 <string name="hello_world" >Hello world!
                 </string>
-                <string name="password" >Password
-                </string>
                 <string name="login" >Login
+                </string>
+                <string name="password" >Password
                 </string>
             </file>
             <file
