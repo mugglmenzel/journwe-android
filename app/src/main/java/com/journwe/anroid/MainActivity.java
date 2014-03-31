@@ -1,14 +1,18 @@
 package com.journwe.anroid;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
@@ -62,6 +66,11 @@ public class MainActivity extends Activity {
 		String authorisationURL = s.getAuthorizationUrl(null);
 
         final WebView webview = (WebView) findViewById(R.id.webview);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) webview.getLayoutParams();
+        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        webview.setLayoutParams(params);
+
       //  final Token requestToken = s.getRequestToken();
         final String authURL = s.getAuthorizationUrl(null);
 
