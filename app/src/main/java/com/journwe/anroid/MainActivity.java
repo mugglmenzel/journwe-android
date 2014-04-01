@@ -62,7 +62,6 @@ public class MainActivity extends Activity {
 
         Log.i("login", "still running");
 
-
 		String authorisationURL = s.getAuthorizationUrl(null);
 
         final WebView webview = (WebView) findViewById(R.id.webview);
