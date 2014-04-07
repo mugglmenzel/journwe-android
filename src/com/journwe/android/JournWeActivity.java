@@ -1,11 +1,16 @@
 package com.journwe.android;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import android.app.ActionBar;
@@ -14,6 +19,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +48,8 @@ public class JournWeActivity extends Activity implements
 	private Session session;
 	private static String userid;
 	private static String username;
+	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/login";
+	private static final String URL_STRING = "http://www.journwe.com/api/json/adventures/my.json";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +72,10 @@ public class JournWeActivity extends Activity implements
 			userid = (String) b.get(MainActivity.USER_ID);
 			username = (String) b.get(MainActivity.USER_NAME);
 		}
-		
+
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+				.permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 	}
 
 	@Override
@@ -124,11 +135,8 @@ public class JournWeActivity extends Activity implements
 	}
 
 	private static String call() {
-		String re = "calling";
-		String urlstring = "www.journwe.com/api/json/mobile/login";
-
-		CookieManager cookieManager = new CookieManager();
-		CookieHandler.setDefault(cookieManager);
+		String re = "call";
+		String urlstring = URL_STRING;
 
 		try {
 			Log.i("API call", urlstring);
@@ -137,20 +145,45 @@ public class JournWeActivity extends Activity implements
 
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
-			InputStream in = connection.getInputStream();
-			re = in.toString();
-			
+
+			CookieManager cookiemanager = new CookieManager();
+			CookieHandler.setDefault(cookiemanager);
+			HttpCookie cookie = new HttpCookie("JournWe", "Cookie");
+			cookie.setDomain("journwe.com");
+			cookie.setPath("/api/json/mobile/login");
+			cookie.setVersion(0);
+			cookiemanager.getCookieStore().add(new URI("http://journwe.com/"), cookie);
+
+			java.net.CookieManager msCookieManager = new java.net.CookieManager();
+			// msCookieManager.put(COOKIES_URI, connection.getHeaderFields());
+
+			String cookieStr = "mobileLogin=true; mobileProvider=facebook; mobileUserId=" + userid;
+
+			connection.setRequestProperty("Cookie", cookieStr);
+
+			Log.i("API call", cookieStr);
+
+			connection.connect();
+
+//			InputStream in = connection.getInputStream();
+//
+//			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+//			String read = "";
+//			re = "input:\n";
+//			while ((read = br.readLine()) != null) {
+//				re += read;
+//			}
+
 		} catch (MalformedURLException e) {
 			re = "MalformedURLException";
 			e.printStackTrace();
 		} catch (IOException e) {
 			re = "IOException";
 			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			re = "IOException";
+			e.printStackTrace();
 		}
-		// connection.setDoOutput(true);
-		// java.net.CookieManager msCookieManager = new
-		// java.net.CookieManager();
-		// msCookieManager.put(COOKIES_URI, connection.getHeaderFields());
 
 		return re;
 	}
