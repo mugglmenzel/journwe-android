@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
 	public final static String USER_ID = "com.journwe.android.userid";
 	public final static String USER_NAME = "com.journwe.android.username";
 	private Session fbsession;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
 	public void login(View view) {
 		final Intent intent = new Intent(this, JournWeActivity.class);
-		
+
 		Log.i("login", "start");
 		// start Facebook Login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -91,12 +91,12 @@ public class MainActivity extends Activity {
 				if (exception != null) {
 					Log.i("login", exception.getMessage());
 				}
-				
+
 				if (!state.isOpened()) {
 					Log.i("login", "not opened");
 					Log.i("login", session.getState().toString());
 				}
-				
+
 				if (state.isOpened()) {
 
 					Log.i("login", "session opened");
@@ -109,29 +109,30 @@ public class MainActivity extends Activity {
 								@Override
 								public void onCompleted(GraphUser user,
 										Response response) {
-									Log.i("login", "if");
 									if (user != null) {
 										Log.i("login", "complete");
 
+										GraphUser u = user;
 										intent.putExtra(USER_ID, user.getId());
-										intent.putExtra(USER_NAME, user.getName());
+										intent.putExtra(USER_NAME,
+												user.getName());
 										intent.putExtra(SESSION, fbsession);
-										
+
 										startActivity(intent);
 									}
 								}
 
 							});
-					HttpClient client = new DefaultHttpClient();
 				}
 			}
 		});
 
 	}
 
-	  @Override
-	  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	      super.onActivityResult(requestCode, resultCode, data);
-	      Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-	  }
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode,
+				resultCode, data);
+	}
 }
