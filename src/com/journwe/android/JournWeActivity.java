@@ -1,32 +1,30 @@
 package com.journwe.android;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -37,6 +35,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -61,6 +61,8 @@ public class JournWeActivity extends Activity implements
 	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/login";
 	private static final String URL_STRING = "http://www.journwe.com/api/json/adventures/my.json";
 	private static CookieManager cookieManager;
+	private ListView lv;
+	private static List<Trip> myTrips;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,12 @@ public class JournWeActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
+		// lv = (ListView) findViewById(R.id.listView1);
+		// Button bu = new Button(this);
+		// // lv.add(bu);
+
+		myTrips = new ArrayList<Trip>();
+
 		Intent intent = getIntent();
 		Bundle b = intent.getExtras();
 
@@ -88,8 +96,9 @@ public class JournWeActivity extends Activity implements
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 
-		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-		
+		CookieHandler.setDefault(new CookieManager(null,
+				CookiePolicy.ACCEPT_ALL));
+
 		try {
 			String urlstring = URL_LOGIN;
 
@@ -111,7 +120,9 @@ public class JournWeActivity extends Activity implements
 
 			connection.connect();
 
-			Log.i("login", String.valueOf(connection.getHeaderFields().get("Set-Cookie")));
+			Log.i("login",
+					String.valueOf(connection.getHeaderFields().get(
+							"Set-Cookie")));
 			cookieManager = (CookieManager) CookieHandler.getDefault();
 
 		} catch (MalformedURLException e) {
@@ -122,9 +133,11 @@ public class JournWeActivity extends Activity implements
 		// catch (URISyntaxException e) {
 		// e.printStackTrace();
 		// }
-		
+
 		try {
-			Log.i("login", String.valueOf(cookieManager.getCookieStore().get(new URI(URL_LOGIN))));
+			Log.i("login",
+					String.valueOf(cookieManager.getCookieStore().get(
+							new URI(URL_LOGIN))));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -197,9 +210,7 @@ public class JournWeActivity extends Activity implements
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 
-			re = String.valueOf(connection.getHeaderFields().get("Set-Cookie"));
-
-			re += "\ninput:\n";
+			re = "";
 			InputStream in = connection.getInputStream();
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -210,11 +221,42 @@ public class JournWeActivity extends Activity implements
 
 			Log.i("api", re);
 
-			// CookieManager cookiemanager = new CookieManager();
-			// CookieHandler.setDefault(cookiemanager);
-			//
-			// java.net.CookieManager msCookieManager = new
-			// java.net.CookieManager();
+			JSONArray jsonArray;
+			myTrips = new ArrayList<Trip>();
+
+			try {
+				jsonArray = new JSONArray(re);
+				Log.i("JSON", "Number of entries " + jsonArray.length());
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					Status s = null;
+					if (jsonObject.getString("status").equals("GOING")) {
+						s = Status.GOING;
+					}
+					
+					else if (jsonObject.getString("status").equals("BOOKED")) {
+						s = Status.BOOKED;
+					}
+					
+					else if (jsonObject.getString("status").equals("NOTGOING")) {
+						s = Status.NOTGOING;
+					}
+					
+					else if (jsonObject.getString("status").equals("UNDECIDED")) {
+						s = Status.UNDECIDED;
+					}
+					
+					Trip t = new Trip(jsonObject.getString("id"), jsonObject.getString("name"), jsonObject.getString("link"), Integer.parseInt(jsonObject.getString("peopleCount")), s);
+					myTrips.add(t);
+					Log.i("Trip", "name: " + t.getName());
+					Log.i("Trip", "id: " + t.getId());
+					Log.i("Trip", "link: " + t.getLink());
+					Log.i("Trip", "people: " + t.getPeople());
+					Log.i("Trip", "status: " + t.getStatus());
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 
 		} catch (MalformedURLException e) {
 			re = "MalformedURLException";
@@ -223,10 +265,6 @@ public class JournWeActivity extends Activity implements
 			re = "IOException";
 			e.printStackTrace();
 		}
-		// catch (URISyntaxException e) {
-		// re = "IOException";
-		// e.printStackTrace();
-		// }
 
 		return re;
 	}
