@@ -1,11 +1,12 @@
 package com.journwe.android;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 public class Trip {
 	private String id;
 	private String link;
-	private Image image;
+	private Bitmap image;
 	private String imageTimeStamp;
 	private String name;
 	private int people;
@@ -13,12 +14,16 @@ public class Trip {
 	private String favTime;
 	private Status status;
 	
-	public Trip(String id, String name, String link, int people, Status status) {
+	public Trip(String id, String name, String link, int people, Status status, Bitmap image, String imageTimeStamp, String favPlace, String favTime) {
 		this.id = id;
 		this.name = name;
 		this.link = link;
 		this.people = people;
 		this.status = status;
+		this.image = image;
+		this.imageTimeStamp = imageTimeStamp;
+		this.favPlace = favPlace;
+		this.favTime = favTime;
 	}
 
 	public String getId() {
@@ -37,11 +42,11 @@ public class Trip {
 		this.link = link;
 	}
 
-	public Image getImage() {
+	public Bitmap getImage() {
 		return image;
 	}
 
-	public void setImage(Image image) {
+	public void setImage(Bitmap image) {
 		this.image = image;
 	}
 
@@ -91,6 +96,11 @@ public class Trip {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 }
 /*

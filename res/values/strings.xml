@@ -7,9 +7,9 @@
     <string name="app_id">515340035175937</string>
     <string name="fblogin">Login with facebook</string>
     <string name="title_activity_journ_we">JournWeActivity</string>
-    <string name="title_section1">Name</string>
+    <string name="title_section1">My JournWes</string>
     <string name="title_section2">ID</string>
-    <string name="title_section3">API call</string>
+    <string name="title_section3">Name</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

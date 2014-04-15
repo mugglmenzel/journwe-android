@@ -9,8 +9,6 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,8 +22,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.widget.DrawerLayout;
@@ -35,9 +34,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.facebook.Session;
 
@@ -61,8 +59,9 @@ public class JournWeActivity extends Activity implements
 	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/login";
 	private static final String URL_STRING = "http://www.journwe.com/api/json/adventures/my.json";
 	private static CookieManager cookieManager;
-	private ListView lv;
+	private static ListView lv;
 	private static List<Trip> myTrips;
+	static JournweArrayAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +75,6 @@ public class JournWeActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-
-		// lv = (ListView) findViewById(R.id.listView1);
-		// Button bu = new Button(this);
-		// // lv.add(bu);
 
 		myTrips = new ArrayList<Trip>();
 
@@ -125,23 +120,32 @@ public class JournWeActivity extends Activity implements
 							"Set-Cookie")));
 			cookieManager = (CookieManager) CookieHandler.getDefault();
 
+			call();
+			
+			while (myTrips.size() < 20) {
+				myTrips.add(myTrips.get(0));
+			}
+			
+			Log.i("start", "adapter");
+			adapter = new JournweArrayAdapter(this,
+					android.R.layout.simple_list_item_1, myTrips);
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// catch (URISyntaxException e) {
-		// e.printStackTrace();
-		// }
 
-		try {
-			Log.i("login",
-					String.valueOf(cookieManager.getCookieStore().get(
-							new URI(URL_LOGIN))));
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Log.i("login",
+//					String.valueOf(cookieManager.getCookieStore().get(
+//							new URI(URL_LOGIN))));
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+		
 	}
 
 	@Override
@@ -233,26 +237,37 @@ public class JournWeActivity extends Activity implements
 					if (jsonObject.getString("status").equals("GOING")) {
 						s = Status.GOING;
 					}
-					
+
 					else if (jsonObject.getString("status").equals("BOOKED")) {
 						s = Status.BOOKED;
 					}
-					
+
 					else if (jsonObject.getString("status").equals("NOTGOING")) {
 						s = Status.NOTGOING;
 					}
-					
+
 					else if (jsonObject.getString("status").equals("UNDECIDED")) {
 						s = Status.UNDECIDED;
 					}
+
+//					Bitmap b = BitmapFactory.decode;//TODO
 					
-					Trip t = new Trip(jsonObject.getString("id"), jsonObject.getString("name"), jsonObject.getString("link"), Integer.parseInt(jsonObject.getString("peopleCount")), s);
+					Trip t = new Trip(jsonObject.getString("id"),
+							jsonObject.getString("name"),
+							jsonObject.getString("link"),
+							Integer.parseInt(jsonObject.getString("peopleCount")),
+							s,
+							null,
+							jsonObject.getString("imageTimestamp"),
+							jsonObject.getString("favoritePlace"),
+							jsonObject.getString("favoriteTime"));
+					
 					myTrips.add(t);
-					Log.i("Trip", "name: " + t.getName());
-					Log.i("Trip", "id: " + t.getId());
-					Log.i("Trip", "link: " + t.getLink());
-					Log.i("Trip", "people: " + t.getPeople());
-					Log.i("Trip", "status: " + t.getStatus());
+//					Log.i("Trip", "name: " + t.getName());
+//					Log.i("Trip", "id: " + t.getId());
+//					Log.i("Trip", "link: " + t.getLink());
+//					Log.i("Trip", "people: " + t.getPeople());
+//					Log.i("Trip", "status: " + t.getStatus());
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -296,15 +311,35 @@ public class JournWeActivity extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_journ_we,
-					container, false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
+			View rootView = inflater.inflate(R.layout.fragment_journ_we, container, false);
+			
+			
+			Log.i("start", "call");
+			call();
 
+			lv = (ListView) rootView.findViewById(R.id.listview);
+			
+			if (lv != null) {
+				Log.i("start", "set adapter");
+				lv.setAdapter(adapter);
+				Log.i("start", "finish");
+			}
+			
+			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	
+				@Override
+				public void onItemClick(AdapterView<?> parent, final View view,
+						int position, long id) {
+					final Trip item = (Trip) parent.getItemAtPosition(position);
+					Log.i("click", item.toString());
+				}
+	
+			});
+			
 			String text = "";
 
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				text = username;
+				text = call();
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -312,10 +347,11 @@ public class JournWeActivity extends Activity implements
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-				text = call();
+				text = username;
 			}
 
-			textView.setText(text); // Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+			// textView.setText(text); //
+			// Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 			return rootView;
 		}
 
