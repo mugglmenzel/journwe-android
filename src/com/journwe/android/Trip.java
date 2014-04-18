@@ -1,9 +1,11 @@
 package com.journwe.android;
 
+import java.io.Serializable;
+
 import android.graphics.Bitmap;
 import android.media.Image;
 
-public class Trip {
+public class Trip implements Serializable {
 	private String id;
 	private String link;
 	private Bitmap image;

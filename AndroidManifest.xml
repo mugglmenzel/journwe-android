@@ -38,12 +38,20 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name="com.journwe.android.JournWeActivity"
+            android:name="com.journwe.android.JournWeListActivity"
             android:label="@string/title_activity_journ_we"
             android:parentActivityName="com.journwe.android.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.journwe.android.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.journwe.android.ShowTripActivity"
+            android:label="@string/title_activity_show_journ_we"
+            android:parentActivityName="com.journwe.android.JournWeListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.journwe.android.JournWeListActivity" />
         </activity>
     </application>
 

@@ -18,9 +18,9 @@ public class JournweArrayAdapter extends ArrayAdapter<Trip> {
 	private Context context;
 	private ArrayList<Trip> values;
 
-	public JournweArrayAdapter(Context context, int textViewResourceId,
+	public JournweArrayAdapter(Context context, int ViewResourceId,
 			List<Trip> objects) {
-		super(context, textViewResourceId, objects);
+		super(context, ViewResourceId, objects);
 		this.context = context;
 		this.values = (ArrayList) objects;
 		for (int i = 0; i < objects.size(); i++) {
@@ -38,12 +38,33 @@ public class JournweArrayAdapter extends ArrayAdapter<Trip> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.test, parent, false);
+		View rowView = inflater.inflate(R.layout.journwe_list_element, parent, false);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+		Trip t = values.get(position);
+		
 		TextView textView1 = (TextView) rowView.findViewById(R.id.t1);
 		TextView textView2 = (TextView) rowView.findViewById(R.id.t2);
-		textView1.setText(values.get(position).getName());
-		textView2.setText(values.get(position).getStatus().toString());
+		TextView textView3 = (TextView) rowView.findViewById(R.id.t3);
+		TextView textView4 = (TextView) rowView.findViewById(R.id.t4);
+		TextView textView5 = (TextView) rowView.findViewById(R.id.t5);
+		
+		String place = t.getFavPlace();
+		
+		if (place == null || place == "null") {
+			place = "No place selected";
+		}
+		
+		String time = t.getFavTime();
+		
+		if (time == null || time == "null") {
+			time = "No time selected";
+		}
+		
+		textView1.setText(t.getName());
+		textView2.setText("Status: " + t.getStatus().toString());
+		textView3.setText("Adventurers: " + t.getPeople());
+		textView4.setText("Place: " + place);
+		textView5.setText("Time: " + time);
 //		String s = values[position];
 //		if (s.startsWith("iPhone")) {
 //			imageView.setImageResource(R.drawable.no);
@@ -51,12 +72,12 @@ public class JournweArrayAdapter extends ArrayAdapter<Trip> {
 //			imageView.setImageResource(R.drawable.ok);
 //		}
 
-		if (values.get(position).getImage() == null) {
+		if (t.getImage() == null) {
 			imageView.setImageResource(R.drawable.ic_launcher);
 		}
 		
 		else {
-			imageView.setImageBitmap(values.get(position).getImage());
+			imageView.setImageBitmap(t.getImage());
 		}
 		
 		return rowView;

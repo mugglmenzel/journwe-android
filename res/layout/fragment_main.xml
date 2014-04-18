@@ -8,13 +8,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.journwe.android.MainActivity$PlaceholderFragment" >
 
-    <Button
-        android:id="@+id/button1"
-        android:onClick="login"
+    <com.facebook.widget.LoginButton
+        android:id="@+id/authButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/fblogin" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:onClick="login"
+        />
 
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.journwe.android;
 
+import java.util.Arrays;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -7,6 +9,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager.OnActivityResultListener;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,8 +23,9 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
 	public final static String SESSION = "com.journwe.android.session";
 	public final static String USER_ID = "com.journwe.android.userid";
@@ -58,6 +63,15 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode,
+				resultCode, data);
+		
+		login();
+	}
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -71,12 +85,17 @@ public class MainActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
+			
+			LoginButton authButton = (LoginButton) rootView.findViewById(R.id.authButton);
+//			authButton.setFragment((android.support.v4.app.Fragment) this);
+			authButton.setReadPermissions("email");
+			
 			return rootView;
 		}
 	}
 
-	public void login(View view) {
-		final Intent intent = new Intent(this, JournWeActivity.class);
+	public void login() {
+		final Intent intent = new Intent(this, JournWeListActivity.class);
 
 		Log.i("login", "start");
 		// start Facebook Login
@@ -88,6 +107,7 @@ public class MainActivity extends Activity {
 					Exception exception) {
 
 				fbsession = session;
+				
 				if (exception != null) {
 					Log.i("login", exception.getMessage());
 				}
@@ -117,6 +137,7 @@ public class MainActivity extends Activity {
 										intent.putExtra(USER_NAME,
 												user.getName());
 										intent.putExtra(SESSION, fbsession);
+//										intent.putExtra(EMAIL, )
 
 										startActivity(intent);
 									}
@@ -127,12 +148,5 @@ public class MainActivity extends Activity {
 			}
 		});
 
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode,
-				resultCode, data);
 	}
 }
