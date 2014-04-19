@@ -27,10 +27,10 @@ import com.facebook.widget.LoginButton;
 
 public class MainActivity extends FragmentActivity {
 
-	public final static String SESSION = "com.journwe.android.session";
-	public final static String USER_ID = "com.journwe.android.userid";
-	public final static String USER_NAME = "com.journwe.android.username";
+	public final static String USER = "com.journwe.android.user";
+	public final static String PROVIDER = "com.journwe.android.provider";
 	private Session fbsession;
+	private static LoginButton authButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +86,12 @@ public class MainActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			
-			LoginButton authButton = (LoginButton) rootView.findViewById(R.id.authButton);
+			authButton = (LoginButton) rootView.findViewById(R.id.authButton);
 //			authButton.setFragment((android.support.v4.app.Fragment) this);
 			authButton.setReadPermissions("email");
+			
+			authButton.setVisibility(1);
+			Log.i("!", "!");
 			
 			return rootView;
 		}
@@ -132,14 +135,14 @@ public class MainActivity extends FragmentActivity {
 									if (user != null) {
 										Log.i("login", "complete");
 
-										GraphUser u = user;
-										intent.putExtra(USER_ID, user.getId());
-										intent.putExtra(USER_NAME,
-												user.getName());
-										intent.putExtra(SESSION, fbsession);
-//										intent.putExtra(EMAIL, )
+										intent.putExtra(PROVIDER, "facebook");
+										intent.putExtra(USER, new JournWeFacebookUser(user, fbsession));
 
+										Log.i("login", "start activity");
+										
 										startActivity(intent);
+										
+//										onDestroy();
 									}
 								}
 

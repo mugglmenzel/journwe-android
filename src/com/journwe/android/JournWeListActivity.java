@@ -64,15 +64,14 @@ public class JournWeListActivity extends Activity implements
 	public final static String SEND_TRIP = "com.journwe.android.trip";
 
 	private CharSequence mTitle;
-	private static Session session;
-	private static String userid;
-	private static String username;
 	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/authenticate/facebook";
 	private static final String URL_STRING = "http://www.journwe.com/api/json/adventures/my.json";
 	private static CookieManager cookieManager;
 	private static ListView lv;
 	private static List<Trip> myTrips;
 	static JournweArrayAdapter adapter;
+	private static String provider;
+	private static JournWeFacebookUser user;
 
 	private static Intent intent;
 
@@ -91,13 +90,22 @@ public class JournWeListActivity extends Activity implements
 
 		myTrips = new ArrayList<Trip>();
 
+		Log.i("start", "intent");
+
 		Intent i = getIntent();
 		Bundle b = i.getExtras();
 		
+		Log.i("start", "intent complete");
+		
 		if (b != null) {
-			session = (Session) b.get(MainActivity.SESSION);
-			userid = (String) b.get(MainActivity.USER_ID);
-			username = (String) b.get(MainActivity.USER_NAME);
+			provider = b.getString(MainActivity.PROVIDER);
+			Log.i("start", "provider");
+			if (provider.equals("facebook")) {
+				user = (JournWeFacebookUser) b.get(MainActivity.USER);
+			}
+
+			Log.i("start", "user");
+			
 		}
 
 		intent = new Intent(this, ShowTripActivity.class);
@@ -115,29 +123,31 @@ public class JournWeListActivity extends Activity implements
 
 			Log.i("API call", urlstring);
 
-			// String cookiestr =
-			// "mobileLogin=true&authProvider=facebook&authUserId="
-			// + userid
-			// + "&expires="
-			// + (session.getExpirationDate().getTime() - new Date()
-			// .getTime());
-			// cookiestr.replace(" ", "+");
-
 			JSONObject object = new JSONObject();
 			try {
-				object.put("access_token", session.getAccessToken());
+				object.put("id", user.getId());
+				object.put("name", user.getName());
+				object.put("first_name", user.getFirst_name());
+				object.put("last_name", user.getLast_name());
+				object.put("link", user.getLink());
+				object.put("username", user.getUsername());
+				object.put("gender", user.getGender());
+				object.put("email", user.getEmail());
+				object.put("timezone", user.getTimezone());
+				object.put("locale", user.getLocale());
+				object.put("verified", user.getVerified());
+				object.put("updeted_time", user.getUpdated_time());
+				object.put("birthday", user.getBirthday());
+				object.put("access_token", user.getSession().getAccessToken());
 				object.put("expires_in",
-						(session.getExpirationDate().getTime() - new Date()
+						(user.getSession().getExpirationDate().getTime() - new Date()
 								.getTime()));
-				object.put("id", userid);
+				object.put("", user);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			Log.i("time", session.getExpirationDate() + " " + (session.getExpirationDate().getTime() - new Date()
-								.getTime()));
 
-			System.out.println(object);
+			Log.i("API call", object.toString());
 
 			URL url = new URL(urlstring);
 
@@ -198,9 +208,9 @@ public class JournWeListActivity extends Activity implements
 	public void writeJSON() {
 		JSONObject object = new JSONObject();
 		try {
-			object.put("access_token", session.getAccessToken());
+			object.put("access_token", user.getSession().getAccessToken());
 			object.put("expires",
-					(session.getExpirationDate().getTime() - new Date()
+					(user.getSession().getExpirationDate().getTime() - new Date()
 							.getTime()));
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -406,11 +416,11 @@ public class JournWeListActivity extends Activity implements
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-				text = userid;
+				text = user.getId();
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-				text = username;
+				text = user.getName();
 			}
 
 			// textView.setText(text); //
