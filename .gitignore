@@ -29,3 +29,6 @@ proguard/
 *.iws
 .idea/
 /target
+
+/app/build
+/.gradle
