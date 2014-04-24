@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.os.Build;
 
-public class ShowTripActivity extends Activity {
+public class JournWeDetail extends Activity {
 
 	private static TextView tv;
 	private static Trip trip;

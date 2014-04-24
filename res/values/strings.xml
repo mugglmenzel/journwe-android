@@ -14,5 +14,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="title_activity_show_journ_we">ShowJournWeActivity</string>
+    <string name="title_activity_journ_we_detail">JournWeDetailActivity</string>
+    <string name="title_tab_section1">Place</string>
+    <string name="title_tab_section2">Adventurer</string>
+    <string name="title_tab_section3">Date</string>
 
 </resources>

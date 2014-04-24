@@ -10,19 +10,11 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,11 +33,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieSyncManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.facebook.Session;
 
 public class JournWeListActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -108,7 +97,7 @@ public class JournWeListActivity extends Activity implements
 			
 		}
 
-		intent = new Intent(this, ShowTripActivity.class);
+		intent = new Intent(this, JournWeDetailActivity.class);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
@@ -117,35 +106,36 @@ public class JournWeListActivity extends Activity implements
 		CookieHandler.setDefault(new CookieManager(null,
 				CookiePolicy.ACCEPT_ALL));
 
+		JSONObject object = new JSONObject();
+		try {
+			object.put("id", user.getId());
+			object.put("name", user.getName());
+			object.put("first_name", user.getFirst_name());
+			object.put("last_name", user.getLast_name());
+			object.put("link", user.getLink());
+			object.put("username", user.getUsername());
+			object.put("gender", user.getGender());
+			object.put("email", user.getEmail());
+			object.put("timezone", user.getTimezone());
+			object.put("locale", user.getLocale());
+			object.put("verified", user.getVerified());
+			object.put("updeted_time", user.getUpdated_time());
+			object.put("birthday", user.getBirthday());
+			object.put("access_token", user.getSession().getAccessToken());
+			object.put("expires_in",
+					(user.getSession().getExpirationDate().getTime() - new Date()
+							.getTime()));
+			object.put("", user);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		try {
 			String urlstring = URL_LOGIN;
 
 			Log.i("API call", urlstring);
 
-			JSONObject object = new JSONObject();
-			try {
-				object.put("id", user.getId());
-				object.put("name", user.getName());
-				object.put("first_name", user.getFirst_name());
-				object.put("last_name", user.getLast_name());
-				object.put("link", user.getLink());
-				object.put("username", user.getUsername());
-				object.put("gender", user.getGender());
-				object.put("email", user.getEmail());
-				object.put("timezone", user.getTimezone());
-				object.put("locale", user.getLocale());
-				object.put("verified", user.getVerified());
-				object.put("updeted_time", user.getUpdated_time());
-				object.put("birthday", user.getBirthday());
-				object.put("access_token", user.getSession().getAccessToken());
-				object.put("expires_in",
-						(user.getSession().getExpirationDate().getTime() - new Date()
-								.getTime()));
-				object.put("", user);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			
 
 			Log.i("API call", object.toString());
 
@@ -333,11 +323,6 @@ public class JournWeListActivity extends Activity implements
 							jsonObject.getString("favoriteTime"));
 
 					myTrips.add(t);
-					// Log.i("Trip", "name: " + t.getName());
-					// Log.i("Trip", "id: " + t.getId());
-					// Log.i("Trip", "link: " + t.getLink());
-					// Log.i("Trip", "people: " + t.getPeople());
-					// Log.i("Trip", "status: " + t.getStatus());
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
