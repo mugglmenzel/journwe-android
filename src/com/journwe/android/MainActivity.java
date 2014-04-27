@@ -22,6 +22,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
@@ -31,15 +32,90 @@ public class MainActivity extends FragmentActivity {
 	public final static String PROVIDER = "com.journwe.android.provider";
 	private Session fbsession;
 	private static LoginButton authButton;
+	private UiLifecycleHelper uiHelper;
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			onSessionStateChange(session, state, exception);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		uiHelper = new UiLifecycleHelper(MainActivity.this, callback);
+		uiHelper.onCreate(savedInstanceState);
+
+		Session session = Session.getActiveSession();
+
+		if (session != null) {
+			Log.i("login", session.toString());
+			Log.i("login", session.getState().toString());
+		}
+
+		else {
+			Log.i("login", "null");
+		}
+
+		if (session != null && !session.isClosed()) {
+			login();
+		}
+
 		setContentView(R.layout.activity_main);
 
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		Session session = Session.getActiveSession();
+		if (session != null && (session.isOpened() || session.isClosed())) {
+			onSessionStateChange(session, session.getState(), null);
+		}
+
+		uiHelper.onResume();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode,
+				resultCode, data);
+
+		login();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		uiHelper.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		uiHelper.onDestroy();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		if (state.isOpened()) {
+			Log.i("TAG", "Logged in...");
+		} else if (state.isClosed()) {
+			Log.i("TAG", "Logged out...");
 		}
 	}
 
@@ -63,15 +139,6 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode,
-				resultCode, data);
-		
-		login();
-	}
-
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -85,14 +152,14 @@ public class MainActivity extends FragmentActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
-			
+
 			authButton = (LoginButton) rootView.findViewById(R.id.authButton);
-//			authButton.setFragment((android.support.v4.app.Fragment) this);
+			// authButton.setFragment((android.support.v4.app.Fragment) this);
 			authButton.setReadPermissions("email");
-			
+
 			authButton.setVisibility(1);
 			Log.i("!", "!");
-			
+
 			return rootView;
 		}
 	}
@@ -110,7 +177,7 @@ public class MainActivity extends FragmentActivity {
 					Exception exception) {
 
 				fbsession = session;
-				
+
 				if (exception != null) {
 					Log.i("login", exception.getMessage());
 				}
@@ -136,13 +203,15 @@ public class MainActivity extends FragmentActivity {
 										Log.i("login", "complete");
 
 										intent.putExtra(PROVIDER, "facebook");
-										intent.putExtra(USER, new JournWeFacebookUser(user, fbsession));
+										intent.putExtra(USER,
+												new JournWeFacebookUser(user,
+														fbsession));
 
 										Log.i("login", "start activity");
-										
+
 										startActivity(intent);
-										
-//										onDestroy();
+
+										// onDestroy();
 									}
 								}
 

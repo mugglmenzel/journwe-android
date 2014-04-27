@@ -33,7 +33,7 @@ public class BitmapLoader extends AsyncTask<String, Integer, Bitmap> {
 		Log.v("url", sUrl[0]);
 		URL imageURL = null;
 		
-		if (sUrl[0] == null) {
+		if (sUrl[0].equals(null) || sUrl[0].equals("null")) {
 			
 		}
 		
