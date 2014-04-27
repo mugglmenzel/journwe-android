@@ -5,13 +5,13 @@ import android.graphics.Bitmap;
 public class DetailedTrip extends Trip {
 	private Trip trip;
 	
-	public DetailedTrip(String id, String name, String link, int people, Status status, Bitmap image, String imageTimeStamp, String favPlace, String favTime) {
-		super(id, name, link, people, status, image, imageTimeStamp, favPlace, favTime);
+	public DetailedTrip(String id, String name, String link, int people, Status status, Bitmap image, String imageTimeStamp, String favPlace, String favTime, String imageURL) {
+		super(id, name, link, people, status, image, imageTimeStamp, favPlace, favTime, imageURL);
 		
 	}
 	
 	public DetailedTrip(Trip t) {
-		super(t.getId(), t.getName(), t.getLink(), t.getPeople(), t.getStatus(), t.getImage(), t.getImageTimeStamp(), t.getFavPlace(), t.getFavTime());
+		super(t.getId(), t.getName(), t.getLink(), t.getPeople(), t.getStatus(), null/*TODO*/, t.getImageTimeStamp(), t.getFavPlace(), t.getFavTime(), t.getImageURL());
 		
 		this.trip = t;
 	}

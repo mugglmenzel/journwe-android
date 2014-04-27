@@ -24,6 +24,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.widget.DrawerLayout;
@@ -54,13 +56,17 @@ public class JournWeListActivity extends Activity implements
 
 	private CharSequence mTitle;
 	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/authenticate/facebook";
-	private static final String URL_STRING = "http://www.journwe.com/api/json/adventures/my.json";
+	private static final String URL_CALL = "/api/json/adventures/my.json";
 	private static CookieManager cookieManager;
 	private static ListView lv;
 	private static List<Trip> myTrips;
 	static JournweArrayAdapter adapter;
 	private static String provider;
 	private static JournWeFacebookUser user;
+	private static DownloadTask dt;
+	private static Bitmap b;
+//	private static BitmapLoader bl;
+	public static Bitmap icon;
 
 	private static Intent intent;
 
@@ -68,14 +74,19 @@ public class JournWeListActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_journ_we);
+		
+		icon = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.ic_launcher);
 
-		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-				.findFragmentById(R.id.navigation_drawer);
-		mTitle = getTitle();
+		dt = new DownloadTask(this);
+//		bl = new BitmapLoader(this);
 
-		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+				.permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+
+		CookieHandler.setDefault(new CookieManager(null,
+				CookiePolicy.ACCEPT_ALL));
 
 		myTrips = new ArrayList<Trip>();
 
@@ -83,9 +94,9 @@ public class JournWeListActivity extends Activity implements
 
 		Intent i = getIntent();
 		Bundle b = i.getExtras();
-		
+
 		Log.i("start", "intent complete");
-		
+
 		if (b != null) {
 			provider = b.getString(MainActivity.PROVIDER);
 			Log.i("start", "provider");
@@ -94,17 +105,8 @@ public class JournWeListActivity extends Activity implements
 			}
 
 			Log.i("start", "user");
-			
+
 		}
-
-		intent = new Intent(this, JournWeDetailActivity.class);
-
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-				.permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-
-		CookieHandler.setDefault(new CookieManager(null,
-				CookiePolicy.ACCEPT_ALL));
 
 		JSONObject object = new JSONObject();
 		try {
@@ -122,9 +124,8 @@ public class JournWeListActivity extends Activity implements
 			object.put("updeted_time", user.getUpdated_time());
 			object.put("birthday", user.getBirthday());
 			object.put("access_token", user.getSession().getAccessToken());
-			object.put("expires_in",
-					(user.getSession().getExpirationDate().getTime() - new Date()
-							.getTime()));
+			object.put("expires_in", (user.getSession().getExpirationDate()
+					.getTime() - new Date().getTime()));
 			object.put("", user);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -135,47 +136,37 @@ public class JournWeListActivity extends Activity implements
 
 			Log.i("API call", urlstring);
 
-			
-
-			Log.i("API call", object.toString());
-
 			URL url = new URL(urlstring);
 
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
-			
+
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", 
-			           "application/json");
-	        
-	        connection.connect();
-	        
-	        OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-	        wr.write(object.toString());
-	        wr.flush(); 
-	       
-	        wr.close(); 
-	        
+			connection.setRequestProperty("Content-Type", "application/json");
+
+			connection.connect();
+
+			OutputStreamWriter wr = new OutputStreamWriter(
+					connection.getOutputStream());
+			wr.write(object.toString());
+			wr.flush();
+
+			wr.close();
+
 			Log.i("response", "Response Code : " + connection.getResponseCode());
-	        
+
 			cookieManager = (CookieManager) CookieHandler.getDefault();
-	        
-			Log.i("cookie", cookieManager.getCookieStore().getCookies().size() + "");
-			
+
+			Log.i("cookie", cookieManager.getCookieStore().getCookies().size()
+					+ "");
+
 			call();
 
-			if (myTrips.size() > 0) {
-				while (myTrips.size() < 20) {
-					myTrips.add(myTrips.get(0));
-				}
-			}
-			
-			Log.i("start", "adapter");
 			adapter = new JournweArrayAdapter(this,
 					android.R.layout.simple_list_item_1, myTrips);
-	//
+			//
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -185,13 +176,15 @@ public class JournWeListActivity extends Activity implements
 			Log.i("exception", e.getMessage());
 		}
 
-		// try {
-		// Log.i("login",
-		// String.valueOf(cookieManager.getCookieStore().get(
-		// new URI(URL_LOGIN))));
-		// } catch (URISyntaxException e) {
-		// e.printStackTrace();
-		// }
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
+				.findFragmentById(R.id.navigation_drawer);
+		mTitle = getTitle();
+
+		// Set up the drawer.
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
+
+		intent = new Intent(this, JournWeDetailActivity.class);
 
 	}
 
@@ -199,9 +192,8 @@ public class JournWeListActivity extends Activity implements
 		JSONObject object = new JSONObject();
 		try {
 			object.put("access_token", user.getSession().getAccessToken());
-			object.put("expires",
-					(user.getSession().getExpirationDate().getTime() - new Date()
-							.getTime()));
+			object.put("expires", (user.getSession().getExpirationDate()
+					.getTime() - new Date().getTime()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -266,75 +258,65 @@ public class JournWeListActivity extends Activity implements
 
 	private static String call() {
 		String re = "";
-		String urlstring = URL_STRING;
+
+		re = dt.doInBackground(URL_CALL);
+
+		JSONArray jsonArray;
+		myTrips = new ArrayList<Trip>();
 
 		try {
-			URL url = new URL(urlstring);
+			jsonArray = new JSONArray(re);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				Status s = null;
+				String stat = jsonObject.getString("status");
 
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-
-			InputStream in = connection.getInputStream();
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String read = "";
-			while ((read = br.readLine()) != null) {
-				re += read;
-			}
-
-			Log.i("api", re);
-
-			JSONArray jsonArray;
-			myTrips = new ArrayList<Trip>();
-
-			try {
-				jsonArray = new JSONArray(re);
-				Log.i("JSON", "Number of entries " + jsonArray.length());
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					Status s = null;
-					String stat = jsonObject.getString("status");
-					
-					if (stat.equals("GOING")) {
-						s = Status.GOING;
-					}
-
-					else if (stat.equals("BOOKED")) {
-						s = Status.BOOKED;
-					}
-
-					else if (stat.equals("NOTGOING")) {
-						s = Status.NOTGOING;
-					}
-
-					else {
-						s = Status.UNDECIDED;
-					}
-
-					// Bitmap b = BitmapFactory.decode;//TODO
-
-					Trip t = new Trip(jsonObject.getString("id"),
-							jsonObject.getString("name"),
-							jsonObject.getString("link"),
-							Integer.parseInt(jsonObject
-									.getString("peopleCount")), s, null,
-							jsonObject.getString("imageTimestamp"),
-							jsonObject.getString("favoritePlace"),
-							jsonObject.getString("favoriteTime"));
-
-					myTrips.add(t);
+				if (stat.equals("GOING")) {
+					s = Status.GOING;
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
 
-		} catch (MalformedURLException e) {
-			re = "MalformedURLException";
-			e.printStackTrace();
-		} catch (IOException e) {
-			re = "IOException";
+				else if (stat.equals("BOOKED")) {
+					s = Status.BOOKED;
+				}
+
+				else if (stat.equals("NOTGOING")) {
+					s = Status.NOTGOING;
+				}
+
+				else {
+					s = Status.UNDECIDED;
+				}
+
+				b = null;
+
+//				if (jsonObject.get("image").toString() != null) {
+//					b = bl.doInBackground(jsonObject.get("image").toString());
+//				}
+
+				Log.i("image", jsonObject.get("image").toString());
+
+				Trip t = new Trip(jsonObject.getString("id"),
+						jsonObject.getString("name"),
+						jsonObject.getString("link"),
+						Integer.parseInt(jsonObject.getString("peopleCount")),
+						s, null, jsonObject.getString("imageTimestamp"),
+						jsonObject.getString("favoritePlace"),
+						jsonObject.getString("favoriteTime"), 
+						jsonObject.get("image").toString());
+
+				myTrips.add(t);
+			}
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		//
+		// } catch (MalformedURLException e) {
+		// re = "MalformedURLException";
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// re = "IOException";
+		// e.printStackTrace();
+		// }
 
 		return re;
 	}
@@ -370,14 +352,15 @@ public class JournWeListActivity extends Activity implements
 					container, false);
 
 			Log.i("start", "call");
-			call();
+
+			if (myTrips == null) {
+				call();
+			}
 
 			lv = (ListView) rootView.findViewById(R.id.listview);
 
 			if (lv != null) {
-				Log.i("start", "set adapter");
 				lv.setAdapter(adapter);
-				Log.i("start", "finish");
 			}
 
 			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -387,29 +370,27 @@ public class JournWeListActivity extends Activity implements
 						int position, long id) {
 					Trip item = (Trip) parent.getItemAtPosition(position);
 					Log.i("click", item.toString());
-
+					
+//					item.setImage(null);
+					
 					intent.putExtra(SEND_TRIP, item);
 					startActivity(intent);
 				}
 
 			});
 
-			String text = "";
-
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				text = call();
+
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-				text = user.getId();
+
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-				text = user.getName();
+
 			}
 
-			// textView.setText(text); //
-			// Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 			return rootView;
 		}
 

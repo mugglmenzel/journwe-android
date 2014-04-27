@@ -55,7 +55,6 @@
         </activity>
         <activity
             android:name="com.journwe.android.JournWeDetailActivity"
-            android:label="@string/title_activity_journ_we_detail"
             android:parentActivityName="com.journwe.android.JournWeListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -1,14 +1,5 @@
 package com.journwe.android;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
 
 import org.json.JSONArray;
@@ -20,11 +11,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -33,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class JournWeDetailActivity extends Activity implements
@@ -56,12 +46,27 @@ public class JournWeDetailActivity extends Activity implements
 	private static final String URL_BASE = "http://www.journwe.com";
 	private static DetailedTrip trip;
 	private static DownloadTask dt;
+	private static Bitmap b;
+	private static BitmapLoader bl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.i("detail", "detail");
+		
 		setContentView(R.layout.activity_journ_we_detail);
 
+		bl = new BitmapLoader(this);
+		Intent in = getIntent();
+		t = (Trip) in.getExtras().get(JournWeListActivity.SEND_TRIP);
+		trip = new DetailedTrip(t);
+		
+		trip.getTrip().setImage(bl.doInBackground(trip.getImageURL()));
+		
+		dt = new DownloadTask(this);
+
+		getActionBar().setTitle(trip.getTrip().getName());
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -95,11 +100,6 @@ public class JournWeDetailActivity extends Activity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-
-		Intent i = getIntent();
-		t = (Trip) i.getExtras().get(JournWeListActivity.SEND_TRIP);
-		trip = new DetailedTrip(t);
-		dt = new DownloadTask(this);
 	}
 
 	@Override
@@ -140,206 +140,75 @@ public class JournWeDetailActivity extends Activity implements
 			FragmentTransaction fragmentTransaction) {
 	}
 
-	private class DownloadTask extends AsyncTask<String, Integer, String> {
-
-		private Context context;
-		private PowerManager.WakeLock mWakeLock;
-
-		public DownloadTask(Context context) {
-			this.context = context;
-		}
-
-		@Override
-		protected String doInBackground(String... sUrl) {
-			InputStream input = null;
-			OutputStream output = null;
-			HttpURLConnection connection = null;
-			String in;
-			try {
-				URL url = new URL(URL_BASE + sUrl[0]);
-				
-				Log.i("url", url.toString());
-				
-				connection = (HttpURLConnection) url.openConnection();
-				connection.connect();
-
-				// expect HTTP 200 OK, so we don't mistakenly save error report
-				// instead of the file
-				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-					return "Server returned HTTP "
-							+ connection.getResponseCode() + " "
-							+ connection.getResponseMessage();
-				}
-
-				// download the file
-				input = connection.getInputStream();
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						input));
-				String read = "";
-				in = "";
-
-				while ((read = br.readLine()) != null) {
-					in += read;
-				}
-
-				Log.i("place", in);
-
-				if (isCancelled()) {
-					input.close();
-					return null;
-				}
-			} catch (Exception e) {
-				return e.toString();
-			} finally {
-				try {
-					if (output != null)
-						output.close();
-					if (input != null)
-						input.close();
-				} catch (IOException ignored) {
-				}
-
-				if (connection != null)
-					connection.disconnect();
-			}
-			return in;
-		}
-	}
-
 	private static void callPlace() {
+		Log.i("call", "place");
 
 		String in = dt.doInBackground("/api/json/adventure/"
 				+ trip.getTrip().getId() + "/places.json");
 
-		// try {
-		// URL url = new URL(URL_BASE + "/api/json/adventure/"
-		// + trip.getTrip().getId() + "/places.json");
-		//
-		// Log.i("url", url.toString());
-		//
-		// HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		//
-		// InputStream in = con.getInputStream();
-		//
-		// BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		// String read = "";
-		// String input = "";
-		//
-		// while ((read = br.readLine()) != null) {
-		// input += read;
-		// }
-		//
-		// Log.i("place", input);
-		//
-		try {
-			JSONObject j = new JSONObject(in);
+		JSONArray json = null;
 
-			Log.i("place", j.getString("placeId"));
+		try {
+			Log.i("json", in);
+			json = new JSONArray(in);
+
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject j = json.getJSONObject(i);
+				
+				Log.i("object", j.toString());
+			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		//
-		// } catch (MalformedURLException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 	}
 
 	private static void callAdventurers() {
-		String in = dt.doInBackground("/api/json/adventure/"
-					+ trip.getTrip().getId() + "/adventurers.json");
+		Log.i("call", "adventurers");
 		
-//		try {
-//			URL url = new URL(URL_BASE + "/api/json/adventure/"
-//					+ trip.getTrip().getId() + "/adventurers.json");
-//
-//			Log.i("url", url.toString());
-//
-//			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//
-//			InputStream in = con.getInputStream();
-//
-//			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-//			String read = "";
-//			String input = "";
-//
-//			while ((read = br.readLine()) != null) {
-//				input += read;
-//			}
-//
-//			Log.i("adventurers", input);
-//
-			JSONArray json = null;
+		String in = dt.doInBackground("/api/json/adventure/"
+				+ trip.getTrip().getId() + "/adventurers.json");
 
-			try {
-				Log.i("json", in);
-				json = new JSONArray(in);
+		JSONArray json = null;
 
-				for (int i = 0; i < json.length(); i++) {
-					JSONObject j = json.getJSONObject(i);
+		try {
+			Log.i("json", in);
+			json = new JSONArray(in);
 
-					JournWeAdventurer ja = new JournWeAdventurer(
-							j.getString("is"), j.getString("status"),
-							j.getString("name"), j.getString("link"));
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject j = json.getJSONObject(i);
 
-					Log.i("object", j.toString());
-				}
+				JournWeAdventurer ja = new JournWeAdventurer(j.getString("id"),
+						j.getString("status"), j.getString("name"),
+						j.getString("link"));
 
-			} catch (JSONException e) {
-				e.printStackTrace();
+				Log.i("object", j.toString());
 			}
-//
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
-	/*
-	 * [ {"id":"c067681b-054e-45d8-83d1-250c59c512c3",
-	 * "link":"http://www.journwe.com/user/c067681b-054e-45d8-83d1-250c59c512c3"
-	 * , "name":"Susi",
-	 * "image":"https://graph.facebook.com/100008061185656/picture?width=1200",
-	 * "status":"GOING" }]
-	 */
-
 	private static void callTime() {
+		Log.i("call", "time");
+		
+		String in = dt.doInBackground("/api/json/adventure/"
+				+ trip.getTrip().getId() + "/times.json");
+
+		JSONArray json = null;
+
 		try {
-			URL url = new URL(URL_BASE + "/api/json/adventure/"
-					+ trip.getTrip().getId() + "/times.json");
+			Log.i("json", in);
+			json = new JSONArray(in);
 
-			Log.i("url", url.toString());
-
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-			InputStream in = con.getInputStream();
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String read = "";
-			String input = "";
-
-			while ((read = br.readLine()) != null) {
-				input += read;
+			for (int i = 0; i < json.length(); i++) {
+				JSONObject j = json.getJSONObject(i);
+				
+				Log.i("object", j.toString());
 			}
 
-			Log.i("time", input);
-
-			try {
-				JSONObject j = new JSONObject(input);
-
-				Log.i("adventurer name", j.getString("name"));
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -364,8 +233,8 @@ public class JournWeDetailActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
-			return 3;
+			// Show 4 total pages.
+			return 4;
 		}
 
 		@Override
@@ -373,10 +242,15 @@ public class JournWeDetailActivity extends Activity implements
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_tab_section1).toUpperCase(l);
+				if (trip != null) {
+					return trip.getTrip().getName().toUpperCase(l);
+				} else
+					return "";
 			case 1:
-				return getString(R.string.title_tab_section2).toUpperCase(l);
+				return getString(R.string.title_tab_section1).toUpperCase(l);
 			case 2:
+				return getString(R.string.title_tab_section2).toUpperCase(l);
+			case 3:
 				return getString(R.string.title_tab_section3).toUpperCase(l);
 			}
 			return null;
@@ -410,25 +284,32 @@ public class JournWeDetailActivity extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_journ_we_detail,
+			View rootView;
+			rootView = inflater.inflate(R.layout.fragment_journ_we_detail,
 					container, false);
 			TextView textView = (TextView) rootView
 					.findViewById(R.id.section_tab_label);
 
 			String text = "";
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				text = trip.getTrip().getFavPlace();
-				// callPlace();
+				text = trip.getTrip().getName();
+				ImageView i = (ImageView) rootView.findViewById(R.id.image);
+				i.setImageBitmap(b);
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+				text = trip.getTrip().getFavPlace();
+				 callPlace();
+			}
+
+			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
 				text = String.valueOf(trip.getTrip().getPeople());
 				callAdventurers();
 			}
 
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
 				text = trip.getTrip().getFavTime();
-				// callTime();
+				 callTime();
 			}
 
 			textView.setText(text);
