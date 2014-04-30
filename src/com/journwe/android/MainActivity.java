@@ -207,9 +207,12 @@ public class MainActivity extends FragmentActivity {
 												new JournWeFacebookUser(user,
 														fbsession));
 
+									    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 										Log.i("login", "start activity");
 
 										startActivity(intent);
+										finish();
 
 										// onDestroy();
 									}

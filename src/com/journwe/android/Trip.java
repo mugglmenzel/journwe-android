@@ -62,10 +62,10 @@ public class Trip extends Context implements Serializable {
 		this.favTime = favTime;
 		this.imageURL = imageURL;
 		
-		if (this.image == null) {
-			BitmapLoader bl = new BitmapLoader(this);
-			bl.execute(imageURL);
-		}
+//		if (this.image == null) {
+//			BitmapLoader bl = new BitmapLoader(this);
+//			bl.execute(imageURL);
+//		}
 	}
 
 	public String getImageURL() {

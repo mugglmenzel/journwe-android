@@ -63,7 +63,7 @@ public class JournWeListActivity extends Activity implements
 	static JournweArrayAdapter adapter;
 	private static String provider;
 	private static JournWeFacebookUser user;
-	private static DownloadTask dt;
+	private static Downloader dt;
 	private static Bitmap b;
 //	private static BitmapLoader bl;
 	public static Bitmap icon;
@@ -78,7 +78,7 @@ public class JournWeListActivity extends Activity implements
 		icon = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_launcher);
 
-		dt = new DownloadTask(this);
+		dt = new Downloader(this);
 //		bl = new BitmapLoader(this);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -371,7 +371,7 @@ public class JournWeListActivity extends Activity implements
 					Trip item = (Trip) parent.getItemAtPosition(position);
 					Log.i("click", item.toString());
 					
-//					item.setImage(null);
+					item.setImage(null);
 					
 					intent.putExtra(SEND_TRIP, item);
 					startActivity(intent);

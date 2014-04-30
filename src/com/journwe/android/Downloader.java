@@ -13,13 +13,13 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
 
-public class DownloadTask extends AsyncTask<String, Integer, String> {
+public class Downloader extends AsyncTask<String, Integer, String> {
 
 	private Context context;
 	private PowerManager.WakeLock mWakeLock;
 	private final String URL_BASE = "http://www.journwe.com";
 
-	public DownloadTask(Context context) {
+	public Downloader(Context context) {
 		this.context = context;
 	}
 

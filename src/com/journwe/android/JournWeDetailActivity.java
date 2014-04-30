@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,9 +46,9 @@ public class JournWeDetailActivity extends Activity implements
 	private static Trip t;
 	private static final String URL_BASE = "http://www.journwe.com";
 	private static DetailedTrip trip;
-	private static DownloadTask dt;
+	private static Downloader dt;
 	private static Bitmap b;
-	private static BitmapLoader bl;
+//	private static BitmapLoader bl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +58,14 @@ public class JournWeDetailActivity extends Activity implements
 		
 		setContentView(R.layout.activity_journ_we_detail);
 
-		bl = new BitmapLoader(this);
+//		bl = new BitmapLoader(this);
 		Intent in = getIntent();
 		t = (Trip) in.getExtras().get(JournWeListActivity.SEND_TRIP);
 		trip = new DetailedTrip(t);
 		
-		trip.getTrip().setImage(bl.doInBackground(trip.getImageURL()));
+//		trip.getTrip().setImage(bl.doInBackground(trip.getImageURL()));
 		
-		dt = new DownloadTask(this);
+		dt = new Downloader(this);
 
 		getActionBar().setTitle(trip.getTrip().getName());
 		// Set up the action bar.
@@ -285,34 +286,60 @@ public class JournWeDetailActivity extends Activity implements
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View rootView;
-			rootView = inflater.inflate(R.layout.fragment_journ_we_detail,
-					container, false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_tab_label);
-
-			String text = "";
+			
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				text = trip.getTrip().getName();
-				ImageView i = (ImageView) rootView.findViewById(R.id.image);
-				i.setImageBitmap(b);
+				String description = dt.doInBackground("/api/json/adventure/" + trip.getId() + "/info.json");
+				rootView = inflater.inflate(R.layout.load_detail, container, false);
+				
+				View loadView = rootView.findViewById(R.id.loading_spinner);
+				View content = rootView.findViewById(R.id.detailcontent);
+				
+				content.setVisibility(View.GONE);
+				
+				int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
+				
+				ImageView i = (ImageView) rootView.findViewById(R.id.imageview);
+				i.setTag(trip.getImageURL());
+				
+				new DownloadTask(content, loadView, duration).execute(i);
+				
+				TextView t = (TextView) rootView.findViewById(R.id.textv);
+				t.setText(trip.getTrip().getName());
+				Log.i("detail", description);
 			}
+			
+			else {
+				rootView = inflater.inflate(R.layout.fragment_journ_we_detail,
+						container, false);
+				TextView textView = (TextView) rootView
+						.findViewById(R.id.section_tab_label);
 
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-				text = trip.getTrip().getFavPlace();
-				 callPlace();
+				String text = "";
+				if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+					text = trip.getTrip().getName();
+					ImageView i = (ImageView) rootView.findViewById(R.id.image);
+					i.setImageBitmap(b);
+				}
+
+				else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+					text = trip.getTrip().getFavPlace();
+					 callPlace();
+				}
+
+				else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+					text = String.valueOf(trip.getTrip().getPeople());
+					callAdventurers();
+				}
+
+				else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
+					text = trip.getTrip().getFavTime();
+					 callTime();
+				}
+
+				textView.setText(text);
 			}
-
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-				text = String.valueOf(trip.getTrip().getPeople());
-				callAdventurers();
-			}
-
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
-				text = trip.getTrip().getFavTime();
-				 callTime();
-			}
-
-			textView.setText(text);
+			
+			
 			return rootView;
 		}
 	}
