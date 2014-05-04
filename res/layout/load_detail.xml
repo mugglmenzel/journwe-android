@@ -5,7 +5,7 @@
     tools:context=".LoadedActivity" >
 
     <!-- another layout that will be wrapped inside our layout -->
-    <include layout="@layout/show_detail_general" />
+    <include layout="@layout/journwe_detail" />
 
     <ProgressBar android:id="@+id/loading_spinner"
         style="?android:progressBarStyleLarge"

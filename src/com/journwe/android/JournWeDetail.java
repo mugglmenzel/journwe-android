@@ -1,23 +1,25 @@
 package com.journwe.android;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.os.Build;
+import android.widget.ListView;
 
 public class JournWeDetail extends Activity {
 
-	private static TextView tv;
+	private static ListView lv;
 	private static Trip trip;
+	private static DetailAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,15 @@ public class JournWeDetail extends Activity {
 		
 		Intent i = getIntent();
 		trip = (Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP);
+		
+		getActionBar().setTitle(trip.getName());
+		
+		ArrayList<Trip> a = new ArrayList();
+		a.add(trip);
+		a.add(null);
+		a.add(null);
+		a.add(null);
+		adapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
 	}
 
 	@Override
@@ -67,21 +78,10 @@ public class JournWeDetail extends Activity {
 			View rootView = inflater.inflate(R.layout.fragment_show_trip,
 					container, false);
 			
-			tv = (TextView) rootView.findViewById(R.id.textview);
-
-			String text = "";
-			text += "Name: " + trip.getName() + "\n";
-			text += "Status: " + trip.getStatus() + "\n";
-			text += "People: " + trip.getPeople() + "\n";
-			text += "Place: " + trip.getFavPlace() + "\n";
-			text += "Time: " + trip.getFavTime() + "\n";
-			text += "Id: " + trip.getId() + "\n";
-			text += "Link: " + trip.getLink() + "\n";
+			lv = (ListView) rootView.findViewById(R.id.listView1);
 			
-			if (tv != null) {
-				tv.setText(text);
-			}
-			Log.i("show", tv.toString());
+			lv.setAdapter(adapter);
+			
 			return rootView;
 		}
 	}

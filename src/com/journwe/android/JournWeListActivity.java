@@ -184,20 +184,8 @@ public class JournWeListActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
-		intent = new Intent(this, JournWeDetailActivity.class);
+		intent = new Intent(this, JournWeDetail.class);
 
-	}
-
-	public void writeJSON() {
-		JSONObject object = new JSONObject();
-		try {
-			object.put("access_token", user.getSession().getAccessToken());
-			object.put("expires", (user.getSession().getExpirationDate()
-					.getTime() - new Date().getTime()));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		System.out.println(object);
 	}
 
 	@Override
