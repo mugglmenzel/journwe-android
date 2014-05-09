@@ -21,23 +21,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DetailLoader extends AsyncTask<View, Void, Detail> {
+public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 
 	// reference to our imageview
 	private View mView;
-	private View mContent;
+	private DetailAdapter detail;
 	private View mSpinner;
 	private int mDuration;
 
-	public DetailLoader(View content, View spinner, int duration) {
-		mContent = content;
+	public DetailLoader(DetailAdapter content, View spinner, int duration) {
+		detail = content;
 		mSpinner = spinner;
 		mDuration = duration;
 	}
 
 	@Override
-	protected Detail doInBackground(View... params) {
-		mView = params[0];
+	protected Detail doInBackground(DetailAdapter... params) {
+		mView = params[0].getView();
 		ImageView i = (ImageView) mView.findViewById(R.id.image);
 		String url = (String) i.getTag();
 		Log.i("load", "image " + url);
@@ -84,29 +84,32 @@ public class DetailLoader extends AsyncTask<View, Void, Detail> {
 	@Override
 	protected void onPostExecute(Detail result) {
 		Log.i("load", "set image");
+		
+		detail.setDetail(result);
+		
 		// Set the image view before the content is shown.
-		ImageView i = (ImageView) mView.findViewById(R.id.image);
-		i.setImageBitmap(result.getBitmap());
-
-		TextView t = (TextView) mView.findViewById(R.id.text);
-		t.setText(result.getString());
-
-		// Set the "show" view to 0% opacity but visible, so that it is visible
-		mContent.setAlpha(0f);
-		mContent.setVisibility(View.VISIBLE);
-
-		// Animate the "show" view to 100% opacity, and clear any animation
-		// listener set on the view.
-		mContent.animate().alpha(1f).setDuration(mDuration).setListener(null);
-
-		// Animate the "hide" view to 0% opacity.
-		mSpinner.animate().alpha(0f).setDuration(mDuration)
-				.setListener(new AnimatorListenerAdapter() {
-					@Override
-					public void onAnimationEnd(Animator animation) {
-						mSpinner.setVisibility(View.GONE);
-					}
-				});
+//		ImageView i = (ImageView) mView.findViewById(R.id.image);
+//		i.setImageBitmap(result.getBitmap());
+//
+//		TextView t = (TextView) mView.findViewById(R.id.text);
+//		t.setText(result.getString());
+//
+//		// Set the "show" view to 0% opacity but visible, so that it is visible
+//		detail.getView().setAlpha(0f);
+//		detail.getView().setVisibility(View.VISIBLE);
+//
+//		// Animate the "show" view to 100% opacity, and clear any animation
+//		// listener set on the view.
+//		detail.getView().animate().alpha(1f).setDuration(mDuration).setListener(null);
+//
+//		// Animate the "hide" view to 0% opacity.
+//		mSpinner.animate().alpha(0f).setDuration(mDuration)
+//				.setListener(new AnimatorListenerAdapter() {
+//					@Override
+//					public void onAnimationEnd(Animator animation) {
+//						mSpinner.setVisibility(View.GONE);
+//					}
+//				});
 	}
 
 	/**
