@@ -7,12 +7,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class JournWeDetail extends Activity {
@@ -20,7 +25,13 @@ public class JournWeDetail extends Activity {
 	private static ListView lv;
 	private static Trip trip;
 	private static DetailAdapter adapter;
-	
+	private static LinearLayout ll1;
+	private static LinearLayout ll2;
+	private static LinearLayout ll3;
+	private static LinearLayout ll4;
+	private static LinearLayout ll5;
+	private static int selected;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,18 +41,97 @@ public class JournWeDetail extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
+
 		Intent i = getIntent();
 		trip = (Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP);
-		
+
 		getActionBar().setTitle(trip.getName());
-		
+
 		ArrayList<Trip> a = new ArrayList();
 		a.add(trip);
 		a.add(null);
 		a.add(null);
 		a.add(null);
 		adapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
+		selected = 1;
+		// ll1.setBackgroundColor(Color.parseColor("#B8C6A5"));
+	}
+
+	private static void setColor(int sel) {
+		if (selected == 1) {
+			ll1.setBackgroundColor(Color.parseColor("#cccfd5d3"));
+		}
+
+		else if (selected == 2) {
+			ll2.setBackgroundColor(Color.parseColor("#cccfd5d3"));
+		}
+
+		else if (selected == 3) {
+			ll3.setBackgroundColor(Color.parseColor("#cccfd5d3"));
+		}
+
+		else if (selected == 4) {
+			ll4.setBackgroundColor(Color.parseColor("#cccfd5d3"));
+		}
+
+		else if (selected == 5) {
+			ll5.setBackgroundColor(Color.parseColor("#cccfd5d3"));
+		}
+		
+		if (sel == 1) {
+			ll1.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		}
+
+		else if (sel == 2) {
+			ll2.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		}
+
+		else if (sel == 3) {
+			ll3.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		}
+
+		else if (sel == 4) {
+			ll4.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		}
+
+		else if (sel == 5) {
+			ll5.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		}
+		
+		selected = sel;
+	}
+
+	public void onPlace(View view) {
+		Log.i("scroll", "place");
+		lv.setSelection(1);
+
+		setColor(1);
+	}
+
+	public void onAdventurer(View view) {
+		Log.i("scroll", "place");
+		lv.setSelection(2);
+
+		setColor(2);
+	}
+
+	public void onDate(View view) {
+		Log.i("scroll", "place");
+		lv.setSelection(3);
+
+		setColor(3);
+	}
+
+	public void onChat(View view) {
+		Log.i("scroll", "place");
+
+		setColor(4);
+	}
+
+	public void onCheck(View view) {
+		Log.i("scroll", "place");
+
+		setColor(5);
 	}
 
 	@Override
@@ -77,11 +167,33 @@ public class JournWeDetail extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_show_trip,
 					container, false);
-			
+
+			ll1 = (LinearLayout) rootView.findViewById(R.id.ll1);
+			ll2 = (LinearLayout) rootView.findViewById(R.id.ll2);
+			ll3 = (LinearLayout) rootView.findViewById(R.id.ll3);
+			ll4 = (LinearLayout) rootView.findViewById(R.id.ll4);
+			ll5 = (LinearLayout) rootView.findViewById(R.id.ll5);
+
 			lv = (ListView) rootView.findViewById(R.id.listView1);
-			
+
 			lv.setAdapter(adapter);
-			
+
+			lv.setOnScrollListener(new OnScrollListener() {
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+					if (firstVisibleItem != 0 && firstVisibleItem != selected) {
+						setColor(firstVisibleItem);
+					}
+				}
+
+				@Override
+				public void onScrollStateChanged(AbsListView view,
+						int scrollState) {
+
+				}
+			});
+
 			return rootView;
 		}
 	}
