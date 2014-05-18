@@ -17,5 +17,15 @@
     <string name="title_tab_section1">Place</string>
     <string name="title_tab_section2">Adventurer</string>
     <string name="title_tab_section3">Date</string>
+    <string name="myStatus">You are : --- Set my status</string>
+    <string name="participants">Participants</string>
+    <string name="status">Status</string>
+    <string name="favLocation">Favorite Location:</string>
+    <string name="yourVote">Your Vote:</string>
+    <string name="groupVote">Group Vote:</string>
+    <string name="placeHint">To which place do you want to go?</string>
+    <string name="favTime">Favorite Time</string>
+    <string name="timeStartHint">Start Date</string>
+    <string name="timeEndHint">End Date</string>
 
 </resources>

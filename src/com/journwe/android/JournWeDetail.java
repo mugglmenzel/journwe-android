@@ -53,8 +53,10 @@ public class JournWeDetail extends Activity {
 		a.add(null);
 		a.add(null);
 		adapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
-		selected = 1;
-		// ll1.setBackgroundColor(Color.parseColor("#B8C6A5"));
+		
+		if (ll1 != null) {
+			setColor(1);
+		}
 	}
 
 	private static void setColor(int sel) {
@@ -79,23 +81,23 @@ public class JournWeDetail extends Activity {
 		}
 		
 		if (sel == 1) {
-			ll1.setBackgroundColor(Color.parseColor("#B8C6A5"));
+			ll1.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
 
 		else if (sel == 2) {
-			ll2.setBackgroundColor(Color.parseColor("#B8C6A5"));
+			ll2.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
 
 		else if (sel == 3) {
-			ll3.setBackgroundColor(Color.parseColor("#B8C6A5"));
+			ll3.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
 
 		else if (sel == 4) {
-			ll4.setBackgroundColor(Color.parseColor("#B8C6A5"));
+			ll4.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
 
 		else if (sel == 5) {
-			ll5.setBackgroundColor(Color.parseColor("#B8C6A5"));
+			ll5.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
 		
 		selected = sel;
@@ -182,6 +184,18 @@ public class JournWeDetail extends Activity {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
+//					if (firstVisibleItem == 0) {
+//						setColor(1);
+//					}
+//					
+//					else if (visibleItemCount == 1) {
+//						setColor(firstVisibleItem);
+//					}
+//					
+//					else if (visibleItemCount >= 2) {
+//						setColor(firstVisibleItem + 1);
+//					}
+					
 					if (firstVisibleItem != 0 && firstVisibleItem != selected) {
 						setColor(firstVisibleItem);
 					}

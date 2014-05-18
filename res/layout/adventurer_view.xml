@@ -5,30 +5,68 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:background="#d28b89"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:layout_width="fill_parent" >
-    
-        <ImageView 
-            android:layout_height="fill_parent"
+        android:background="#d28b89" >
+
+        <ImageView
             android:layout_width="50dp"
-            android:src="@drawable/ic_action_group"
+            android:layout_height="fill_parent"
             android:layout_marginLeft="4dp"
-            android:gravity="center_vertical" />
-        
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_action_group" />
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="Adventurers"
-            android:textSize="25sp"
             android:layout_marginLeft="5dp"
-            android:gravity="center_vertical" />
-    
+            android:gravity="center_vertical"
+            android:text="Adventurers"
+            android:textSize="25sp" />
     </LinearLayout>
-    
-    <View
-        android:layout_height="200dp"
+
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:background="#cccfd5d3" />
+        android:layout_height="wrap_content"
+        android:background="#cccfd5d3"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:text="@string/myStatus"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/participants"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/status"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/adventurerList"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            android:layout_marginLeft="25dp" >
+        </ListView>
+    </LinearLayout>
 
 </LinearLayout>

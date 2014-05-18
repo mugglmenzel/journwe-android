@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:background="#bad48a"
+        android:background="#B8C6A5"
         android:layout_height="50dp"
         android:layout_width="fill_parent"
         android:text="Place" >
@@ -27,9 +27,97 @@
     
     </LinearLayout>
     
-    <View
-        android:layout_height="200dp"
+    <LinearLayout
+        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:background="#cccfd5d3" />
+        android:background="#cccfd5d3"
+        android:orientation="vertical" >
+        
+        <LinearLayout
+            android:layout_height="30dp"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_margin="7dp" >
+            
+            <ImageView
+                android:layout_height="25dp"
+                android:layout_width="25dp"
+                android:src="@drawable/ic_action_important"
+                android:contentDescription="//TODO" />
+            
+            <TextView
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:text="@string/favLocation"
+                android:textSize="17sp"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="5dp" />
+            
+            <TextView
+                android:id="@+id/location"
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:text="no location selected"
+                android:textSize="17sp"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="7dp" />
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/yourVote"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/groupVote"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        
+        <ListView
+            android:id="@+id/placeList"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            android:layout_marginLeft="25dp" >
+        </ListView>
+        
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_margin="7dp" >
+            
+            <EditText
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:hint="@string/placeHint" />
+            
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/ic_action_new" />
+            
+        </LinearLayout>
+        
+    </LinearLayout>
 
 </LinearLayout>
