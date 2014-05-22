@@ -23,14 +23,18 @@ import android.widget.ListView;
 public class JournWeDetail extends Activity {
 
 	private static ListView lv;
-	private static Trip trip;
-	private static DetailAdapter adapter;
+	private static DetailedTrip trip;
+	private static DetailAdapter detailAdapter;
 	private static LinearLayout ll1;
 	private static LinearLayout ll2;
 	private static LinearLayout ll3;
 	private static LinearLayout ll4;
 	private static LinearLayout ll5;
 	private static int selected;
+	private static ListView dateList;
+	private static ListView placeList;
+	private static ListView adventurerList;
+	private static DateAdapter dateAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +47,43 @@ public class JournWeDetail extends Activity {
 		}
 
 		Intent i = getIntent();
-		trip = (Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP);
+		trip = new DetailedTrip((Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP));
 
 		getActionBar().setTitle(trip.getName());
 
-		ArrayList<Trip> a = new ArrayList();
+		ArrayList<Trip> a = new ArrayList<Trip>();
+		
 		a.add(trip);
-		a.add(null);
-		a.add(null);
-		a.add(null);
-		adapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
+		
+		new DateLoader(this, trip.getId(), 0).execute(this);
+		
+		dateAdapter = new DateAdapter(this, R.id.dateList, trip.getDates());
+		
+		detailAdapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
 		
 		if (ll1 != null) {
 			setColor(1);
 		}
+	}
+
+	public void setDate(ArrayList<Date> result) {
+		for (Date d : result) {
+			trip.addDate(d);
+			
+			Log.i("date values", "s:" + d.getStart() + " e:" + d.getEnd() + " v:" + d.getVote());
+			
+			if (dateAdapter != null) {
+//				dateAdapter.add(d);
+			}
+		}
+		
+		if (dateAdapter != null) {
+			dateAdapter.notifyDataSetChanged();
+		}
+	}
+
+	public String getId() {
+		return trip.getId();
 	}
 
 	private static void setColor(int sel) {
@@ -176,9 +203,19 @@ public class JournWeDetail extends Activity {
 			ll4 = (LinearLayout) rootView.findViewById(R.id.ll4);
 			ll5 = (LinearLayout) rootView.findViewById(R.id.ll5);
 
+			View dateview = inflater.inflate(R.layout.date_view, container);
+
+			dateList = (ListView) dateview.findViewById(R.id.dateList);
+			placeList = (ListView) rootView.findViewById(R.id.placeList);
+			adventurerList = (ListView) rootView.findViewById(R.id.adventurerList);
+			
+				Log.i("adapter", dateList.toString());
+				
+				dateList.setAdapter(dateAdapter);
+
 			lv = (ListView) rootView.findViewById(R.id.listView1);
 
-			lv.setAdapter(adapter);
+			lv.setAdapter(detailAdapter);
 
 			lv.setOnScrollListener(new OnScrollListener() {
 				@Override

@@ -22,8 +22,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class JournWeDetailActivity extends Activity implements

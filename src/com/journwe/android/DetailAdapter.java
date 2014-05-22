@@ -67,6 +67,10 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		return view;
 	}
 
+	public int getCount() {
+		return 4;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context

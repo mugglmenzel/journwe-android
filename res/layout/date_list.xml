@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+ 
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_action_not_important" />
+ 
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_action_not_important" />
+ 
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_action_not_important" />
+ 
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_action_not_important" />
+ 
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_action_not_important" />
+    
+    <TextView
+        android:id="@+id/datetext"
+        android:layout_height="20dp"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_marginLeft="10dp"
+        android:textSize="20sp"
+        android:text="From-To" />
+    
+    <TextView
+        android:id="@+id/datevote"
+        android:layout_height="20dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:textSize="20sp"
+        android:text="Vote" />
+
+</LinearLayout>
