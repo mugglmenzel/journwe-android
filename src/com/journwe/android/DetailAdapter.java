@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class DetailAdapter extends ArrayAdapter<Trip> {
@@ -117,14 +118,17 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 
 		else if (position == 1) {
 			content = inflater.inflate(R.layout.place_view, parent, false);
+			detail.setPlaceView((ListView)content.findViewById(R.id.placeList));
 		}
 
 		else if (position == 2) {
 			content = inflater.inflate(R.layout.adventurer_view, parent, false);
+			detail.setAdventurerView((ListView)content.findViewById(R.id.adventurerList));
 		}
 
 		else if (position == 3) {
 			content = inflater.inflate(R.layout.date_view, parent, false);
+			detail.setDateView((ListView)content.findViewById(R.id.dateList));
 		}
 
 		return content;

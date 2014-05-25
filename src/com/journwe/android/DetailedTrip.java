@@ -7,11 +7,16 @@ import android.graphics.Bitmap;
 public class DetailedTrip extends Trip {
 	private Trip trip;
 	private String description;
-	private ArrayList<Date> dates;
+	private ArrayList<JournWeDate> dates;
+	private ArrayList<JournWePlace> places;
+	private ArrayList<JournWeAdventurer> adventurers;
 
 	public DetailedTrip(String id, String name, String link, int people, Status status, Bitmap image, String imageTimeStamp, String favPlace, String favTime, String imageURL) {
 		super(id, name, link, people, status, image, imageTimeStamp, favPlace, favTime, imageURL);
+		
 		dates = new ArrayList();
+		places = new ArrayList();
+		adventurers = new ArrayList();
 	}
 	
 	public DetailedTrip(Trip t) {
@@ -19,13 +24,31 @@ public class DetailedTrip extends Trip {
 		
 		this.trip = t;
 		dates = new ArrayList();
+		places = new ArrayList();
+		adventurers = new ArrayList();
 	}
 	
-	public void addDate(Date d) {
+	public void addAdventurer(JournWeAdventurer a) {
+		adventurers.add(a);
+	}
+	
+	public ArrayList<JournWeAdventurer> getAdventurers() {
+		return adventurers;
+	}
+	
+	public void addPlace(JournWePlace p) {
+		places.add(p);
+	}
+	
+	public ArrayList<JournWePlace> getPlaces() {
+		return places;
+	}
+	
+	public void addDate(JournWeDate d) {
 		dates.add(d);
 	}
 
-	public ArrayList<Date> getDates() {
+	public ArrayList<JournWeDate> getDates() {
 		return dates;
 	}
 	

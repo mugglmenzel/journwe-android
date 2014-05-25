@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DateLoader extends AsyncTask<JournWeDetail, Void, ArrayList<Date>> {
+public class DateLoader extends
+		AsyncTask<JournWeDetail, Void, ArrayList<JournWeDate>> {
 
 	// reference to our imageview
 	private String id;
@@ -36,15 +38,16 @@ public class DateLoader extends AsyncTask<JournWeDetail, Void, ArrayList<Date>> 
 	}
 
 	@Override
-	protected ArrayList<Date> doInBackground(JournWeDetail... params) {
-		String url = "http://www.journwe.com/api/json/adventure/" + id + "/times.json";
+	protected ArrayList<JournWeDate> doInBackground(JournWeDetail... params) {
+		String url = "http://www.journwe.com/api/json/adventure/" + id
+				+ "/times.json";
 		Log.i("load date", url);
-		ArrayList<Date> re = loadDate(url);
+		ArrayList<JournWeDate> re = loadDate(url);
 		return re;
 	}
 
-	private ArrayList<Date> loadDate(String url) {
-		ArrayList<Date> re = new ArrayList();
+	private ArrayList<JournWeDate> loadDate(String url) {
+		ArrayList<JournWeDate> re = new ArrayList();
 
 		try {
 			HttpURLConnection connection = (HttpURLConnection) new URL(url)
@@ -63,14 +66,22 @@ public class DateLoader extends AsyncTask<JournWeDetail, Void, ArrayList<Date>> 
 			}
 
 			JSONArray json = new JSONArray(in);
-			
-			for (int i = 0; i < json.length(); i ++) {
+
+			for (int i = 0; i < json.length(); i++) {
 				JSONObject j = json.getJSONObject(i);
-				
-				Date d = new Date(j.get("startDate").toString(), j.get("endDate").toString(), j.get("voteGroup").toString());
-				
+				JournWeDate d = new JournWeDate(null, null, 0);
+				try {
+					long start = Long.parseLong(j.getString("startDate"));
+					long end = Long.parseLong(j.getString("endDate"));
+
+					d = new JournWeDate(new Date(start), new Date(end), 5*Double.parseDouble(j.getString(
+							"voteGroup")));
+
+				} catch (NumberFormatException e) {
+					Log.i("date exception", e.getStackTrace().toString());
+				}
+
 				re.add(d);
-				Log.i("set date", d.getStart()+"");
 			}
 
 		} catch (IOException e1) {
@@ -83,7 +94,7 @@ public class DateLoader extends AsyncTask<JournWeDetail, Void, ArrayList<Date>> 
 	}
 
 	@Override
-	protected void onPostExecute(ArrayList<Date> result) {
+	protected void onPostExecute(ArrayList<JournWeDate> result) {
 		content.setDate(result);
 	}
 }

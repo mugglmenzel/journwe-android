@@ -89,7 +89,7 @@
         <ListView
             android:id="@+id/dateList"
             android:layout_width="fill_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="25dp" >
         </ListView>
         

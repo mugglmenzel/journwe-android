@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 
 public class JournWeDetail extends Activity {
@@ -35,6 +36,8 @@ public class JournWeDetail extends Activity {
 	private static ListView placeList;
 	private static ListView adventurerList;
 	private static DateAdapter dateAdapter;
+	private static PlaceAdapter placeAdapter;
+	 private static AdventurerAdapter adventurerAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,38 +50,140 @@ public class JournWeDetail extends Activity {
 		}
 
 		Intent i = getIntent();
-		trip = new DetailedTrip((Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP));
+		trip = new DetailedTrip(
+				(Trip) i.getSerializableExtra(JournWeListActivity.SEND_TRIP));
 
 		getActionBar().setTitle(trip.getName());
 
 		ArrayList<Trip> a = new ArrayList<Trip>();
-		
+
 		a.add(trip);
-		
+
 		new DateLoader(this, trip.getId(), 0).execute(this);
+
+		// new PlaceLoader(this, trip.getId(), 0).execute(this);
 		
 		dateAdapter = new DateAdapter(this, R.id.dateList, trip.getDates());
-		
+		placeAdapter = new PlaceAdapter(this, R.id.placeList, trip.getPlaces());
+		 adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerList, trip.getAdventurers());
+
 		detailAdapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
-		
+
 		if (ll1 != null) {
 			setColor(1);
 		}
 	}
 
-	public void setDate(ArrayList<Date> result) {
-		for (Date d : result) {
-			trip.addDate(d);
-			
-			Log.i("date values", "s:" + d.getStart() + " e:" + d.getEnd() + " v:" + d.getVote());
-			
-			if (dateAdapter != null) {
-//				dateAdapter.add(d);
-			}
+	public DetailedTrip getTrip() {
+		return trip;
+	}
+
+	public void setDateView(ListView date) {
+		dateList = date;
+
+		LayoutParams lp = (LayoutParams) dateList.getLayoutParams();
+		int height = trip.getDates().size() * 150;
+
+		if (height < 150) {
+			height = 150;
 		}
+
+		lp.height = height;
+		dateList.setLayoutParams(lp);
+
+		dateList.setAdapter(dateAdapter);
+
+		Log.i("set date list size", lp.height + "");
+	}
+
+	public void setPlaceView(ListView place) {
+		placeList = place;
+
+		LayoutParams lp = (LayoutParams) placeList.getLayoutParams();
+		int height = trip.getPlaces().size() * 150;
+
+		if (height < 150) {
+			height = 150;
+		}
+
+		lp.height = height;
+		placeList.setLayoutParams(lp);
+
+		placeList.setAdapter(placeAdapter);
+
+		Log.i("set date list size", lp.height + "");
+
+	}
+
+	public void setAdventurerView(ListView adventurer) {
+		adventurerList = adventurer;
 		
+		LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
+		int height = 212*trip.getAdventurers().size();
+
+		if (height < 212) {
+			height = 212;
+		}
+
+		lp.height = height;
+		adventurerList.setLayoutParams(lp);
+
+		adventurerList.setAdapter(adventurerAdapter);
+
+		Log.i("set adventurer list size", lp.height + "");
+
+	}
+
+	public void setDate(ArrayList<JournWeDate> result) {
+		for (JournWeDate d : result) {
+			trip.addDate(d);
+
+			Log.i("date values", "s:" + d.getStart() + " e:" + d.getEnd()
+					+ " v:" + d.getVote());
+		}
+
 		if (dateAdapter != null) {
 			dateAdapter.notifyDataSetChanged();
+		}
+	}
+
+	public void setPlace(ArrayList<JournWePlace> places) {
+		for (JournWePlace p : places) {
+			trip.addPlace(p);
+
+			Log.i("place", p.getPlace());
+		}
+
+		if (placeAdapter != null) {
+			placeAdapter.notifyDataSetChanged();
+		}
+
+		if (placeList != null) {
+			LayoutParams lp = (LayoutParams) placeList.getLayoutParams();
+			lp.height = trip.getPlaces().size() * 150;
+			placeList.setLayoutParams(lp);
+		}
+	}
+
+	public void setAdventurer(ArrayList<JournWeAdventurer> adventurers) {
+		for (JournWeAdventurer a : adventurers) {
+			trip.addAdventurer(a);
+		}
+		
+		if (adventurerAdapter != null) {
+			adventurerAdapter.notifyDataSetChanged();
+		}
+		
+		if (adventurerList != null) {
+			LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
+			int height = 212*trip.getAdventurers().size();
+
+			if (height < 212) {
+				height = 212;
+			}
+
+			lp.height = height;
+			adventurerList.setLayoutParams(lp);
 		}
 	}
 
@@ -106,7 +211,7 @@ public class JournWeDetail extends Activity {
 		else if (selected == 5) {
 			ll5.setBackgroundColor(Color.parseColor("#cccfd5d3"));
 		}
-		
+
 		if (sel == 1) {
 			ll1.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
@@ -126,7 +231,7 @@ public class JournWeDetail extends Activity {
 		else if (sel == 5) {
 			ll5.setBackgroundColor(Color.parseColor("#bad48a"));
 		}
-		
+
 		selected = sel;
 	}
 
@@ -203,15 +308,18 @@ public class JournWeDetail extends Activity {
 			ll4 = (LinearLayout) rootView.findViewById(R.id.ll4);
 			ll5 = (LinearLayout) rootView.findViewById(R.id.ll5);
 
-			View dateview = inflater.inflate(R.layout.date_view, container);
+			// View dateview = inflater.inflate(R.layout.date_view, container);
+			//
+			// dateList = (ListView) dateview.findViewById(R.id.dateList);
+			// placeList = (ListView) rootView.findViewById(R.id.placeList);
+			// adventurerList = (ListView)
+			// rootView.findViewById(R.id.adventurerList);
 
-			dateList = (ListView) dateview.findViewById(R.id.dateList);
-			placeList = (ListView) rootView.findViewById(R.id.placeList);
-			adventurerList = (ListView) rootView.findViewById(R.id.adventurerList);
-			
-				Log.i("adapter", dateList.toString());
-				
-				dateList.setAdapter(dateAdapter);
+			// if (dateList != null) {
+			// Log.i("adapter", dateList.toString());
+			//
+			// dateList.setAdapter(dateAdapter);
+			// }
 
 			lv = (ListView) rootView.findViewById(R.id.listView1);
 
@@ -221,18 +329,18 @@ public class JournWeDetail extends Activity {
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-//					if (firstVisibleItem == 0) {
-//						setColor(1);
-//					}
-//					
-//					else if (visibleItemCount == 1) {
-//						setColor(firstVisibleItem);
-//					}
-//					
-//					else if (visibleItemCount >= 2) {
-//						setColor(firstVisibleItem + 1);
-//					}
-					
+					// if (firstVisibleItem == 0) {
+					// setColor(1);
+					// }
+					//
+					// else if (visibleItemCount == 1) {
+					// setColor(firstVisibleItem);
+					// }
+					//
+					// else if (visibleItemCount >= 2) {
+					// setColor(firstVisibleItem + 1);
+					// }
+
 					if (firstVisibleItem != 0 && firstVisibleItem != selected) {
 						setColor(firstVisibleItem);
 					}
@@ -248,5 +356,4 @@ public class JournWeDetail extends Activity {
 			return rootView;
 		}
 	}
-
 }
