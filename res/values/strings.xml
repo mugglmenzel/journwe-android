@@ -23,9 +23,16 @@
     <string name="favLocation">Favorite Location:</string>
     <string name="yourVote">Your Vote:</string>
     <string name="groupVote">Group Vote:</string>
-    <string name="placeHint">To which place do you want to go?</string>
+    <string name="placeHint">Where do you want to go?</string>
+    <string name="adventurerHint">Who do you want to invite?</string>
+    <string name="dateHint">When do you want to go?</string>
     <string name="favTime">Favorite Time</string>
     <string name="timeStartHint">Start Date</string>
     <string name="timeEndHint">End Date</string>
+    <string name="create">Create new JournWe</string>
+    <string name="title_activity_create_journ_we">New JournWe</string>
+    <string name="create_section1">Where?</string>
+    <string name="create_section2">Who?</string>
+    <string name="create_section3">When?</string>
 
 </resources>

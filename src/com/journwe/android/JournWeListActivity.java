@@ -68,7 +68,8 @@ public class JournWeListActivity extends Activity implements
 //	private static BitmapLoader bl;
 	public static Bitmap icon;
 
-	private static Intent intent;
+	private static Intent intentDetail;
+	private static Intent intentAdd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +185,8 @@ public class JournWeListActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
-		intent = new Intent(this, JournWeDetail.class);
-
+		intentDetail = new Intent(this, JournWeDetail.class);
+		intentAdd = new Intent(this, CreateJournWe.class);
 	}
 
 	@Override
@@ -356,13 +357,21 @@ public class JournWeListActivity extends Activity implements
 				@Override
 				public void onItemClick(AdapterView<?> parent, final View view,
 						int position, long id) {
-					Trip item = (Trip) parent.getItemAtPosition(position);
-					Log.i("click", item.toString());
 					
-					item.setImage(null);
+					if (position == 0) {
+						startActivity(intentAdd);
+					}
 					
-					intent.putExtra(SEND_TRIP, item);
-					startActivity(intent);
+					else {
+						Trip item = (Trip) parent.getItemAtPosition(position-1);
+						Log.i("click", item.toString());
+						
+						item.setImage(null);
+						
+						intentDetail.putExtra(SEND_TRIP, item);
+						startActivity(intentDetail);
+					}
+					
 				}
 
 			});

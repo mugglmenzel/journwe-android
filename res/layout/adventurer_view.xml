@@ -67,6 +67,30 @@
             android:layout_height="250dp"
             android:layout_marginLeft="25dp" >
         </ListView>
+        
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_margin="7dp" >
+            
+            <EditText
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:hint="@string/adventurerHint" />
+            
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_height="30dp"
+                android:layout_width="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/ic_action_new" />
+            
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

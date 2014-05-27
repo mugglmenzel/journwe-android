@@ -16,9 +16,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@@android:style/Theme.Holo.Light" >
-        
-        <uses-library android:name="com.google.android.maps"/>
-        
+        <uses-library android:name="com.google.android.maps" />
+
         <activity
             android:name="com.journwe.android.MainActivity"
             android:label="@string/app_name" >
@@ -58,6 +57,14 @@
         </activity>
         <activity
             android:name="com.journwe.android.JournWeDetailActivity"
+            android:parentActivityName="com.journwe.android.JournWeListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.journwe.android.JournWeListActivity" />
+        </activity>
+        <activity
+            android:name="com.journwe.android.CreateJournWe"
+            android:label="@string/title_activity_create_journ_we"
             android:parentActivityName="com.journwe.android.JournWeListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
