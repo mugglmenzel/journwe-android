@@ -69,13 +69,13 @@ public class DateLoader extends
 
 			for (int i = 0; i < json.length(); i++) {
 				JSONObject j = json.getJSONObject(i);
-				JournWeDate d = new JournWeDate(null, null, 0);
+				JournWeDate d = new JournWeDate(null, null, 0, "");
 				try {
 					long start = Long.parseLong(j.getString("startDate"));
 					long end = Long.parseLong(j.getString("endDate"));
 
 					d = new JournWeDate(new Date(start), new Date(end), 5*Double.parseDouble(j.getString(
-							"voteGroup")));
+							"voteGroup")), j.getString("favorite"));
 
 				} catch (NumberFormatException e) {
 					Log.i("date exception", e.getStackTrace().toString());

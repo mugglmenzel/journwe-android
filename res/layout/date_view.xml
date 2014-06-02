@@ -53,7 +53,7 @@
                 android:layout_marginLeft="5dp" />
             
             <TextView
-                android:id="@+id/location"
+                android:id="@+id/favtime"
                 android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
                 android:text="no time selected"

@@ -1,5 +1,6 @@
 package com.journwe.android;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,16 +120,22 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		else if (position == 1) {
 			content = inflater.inflate(R.layout.place_view, parent, false);
 			detail.setPlaceView((ListView)content.findViewById(R.id.placeList));
+
+			detail.setFavDateView((TextView) content.findViewById(R.id.location));
 		}
 
 		else if (position == 2) {
 			content = inflater.inflate(R.layout.adventurer_view, parent, false);
 			detail.setAdventurerView((ListView)content.findViewById(R.id.adventurerList));
+			TextView t = (TextView) content.findViewById(R.id.status);
+			t.setText("You are: " + trip.getStatus().toString());
 		}
 
 		else if (position == 3) {
 			content = inflater.inflate(R.layout.date_view, parent, false);
 			detail.setDateView((ListView)content.findViewById(R.id.dateList));
+			detail.setFavDateView((TextView) content.findViewById(R.id.favtime));
+			
 		}
 
 		return content;

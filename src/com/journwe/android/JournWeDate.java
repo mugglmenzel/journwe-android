@@ -6,11 +6,17 @@ public class JournWeDate {
 	private double vote;
 	private Date start;
 	private Date end;
+	private String favorite;
 	
-	public JournWeDate(Date start, Date end, double vote) {
+	public JournWeDate(Date start, Date end, double vote, String favorite) {
 		this.start = start;
 		this.end = end;
 		this.vote = vote;
+		this.favorite = favorite;
+	}
+	
+	public String getFavorite() {
+		return favorite;
 	}
 	
 	public Date getStart() {

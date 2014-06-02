@@ -20,6 +20,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class JournWeDetail extends Activity {
 
@@ -38,6 +39,8 @@ public class JournWeDetail extends Activity {
 	private static DateAdapter dateAdapter;
 	private static PlaceAdapter placeAdapter;
 	 private static AdventurerAdapter adventurerAdapter;
+	 private static TextView favDate;
+	 private static TextView favPlace;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,22 @@ public class JournWeDetail extends Activity {
 
 	public DetailedTrip getTrip() {
 		return trip;
+	}
+
+	public void setFavDateView(TextView date) {
+		favDate = date;
+		
+		if (trip.getFavoriteDate() != null) {
+			favDate.setText(trip.getFavoriteDate().toString());
+		}
+	}
+
+	public void setFavDatePlace(TextView place) {
+		favPlace = place;
+		
+		if (trip.getFavoritePlace() != null) {
+			favPlace.setText(trip.getFavoritePlace().toString());
+		}
 	}
 
 	public void setDateView(ListView date) {
@@ -140,6 +159,14 @@ public class JournWeDetail extends Activity {
 
 			Log.i("date values", "s:" + d.getStart() + " e:" + d.getEnd()
 					+ " v:" + d.getVote());
+			
+			if (d.getFavorite().equals("true")) {
+				trip.setFavoriteDate(d);
+				
+				if (favDate != null) {
+					favDate.setText(d.toString());
+				}
+			}
 		}
 
 		if (dateAdapter != null) {
