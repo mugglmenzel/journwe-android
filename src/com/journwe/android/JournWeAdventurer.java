@@ -6,11 +6,13 @@ public class JournWeAdventurer {
 	private Status status;
 	private String name;
 	private String link;
+	private String imageURL;
 
-	public JournWeAdventurer(String id, String status, String name, String link) {
+	public JournWeAdventurer(String id, String status, String name, String link, String imageURL) {
 		this.id = id;
 		this.name = name;
 		this.link = link;
+		this.imageURL = imageURL;
 
 		if (status.toLowerCase().equals("going")) {
 			this.status = Status.GOING;
@@ -27,6 +29,14 @@ public class JournWeAdventurer {
 		else if (status.toLowerCase().equals("undecided")) {
 			this.status = Status.UNDECIDED;
 		}
+	}
+
+	public String getimageURL() {
+		return imageURL;
+	}
+
+	public void setimageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 
 	public String getId() {

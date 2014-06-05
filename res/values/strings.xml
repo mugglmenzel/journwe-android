@@ -20,13 +20,15 @@
     <string name="myStatus">You are : --- Set my status</string>
     <string name="participants">Participants</string>
     <string name="status">Status</string>
-    <string name="favLocation">Favorite Location:</string>
+    <string name="favPlace">Favorite Location:</string>
+    <string name="favPlaceSelected">no favorite location selected</string>
     <string name="yourVote">Your Vote:</string>
     <string name="groupVote">Group Vote:</string>
     <string name="placeHint">Where do you want to go?</string>
     <string name="adventurerHint">Who do you want to invite?</string>
     <string name="dateHint">When do you want to go?</string>
     <string name="favTime">Favorite Time</string>
+    <string name="favTimeSelected">no favorite time selected</string>
     <string name="timeStartHint">Start Date</string>
     <string name="timeEndHint">End Date</string>
     <string name="create">Create new JournWe</string>

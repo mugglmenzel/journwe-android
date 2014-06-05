@@ -40,7 +40,7 @@ public class AdventurerLoader extends
 	@Override
 	protected ArrayList<JournWeAdventurer> doInBackground(AdventurerAdapter... params) {
 		String url = "http://www.journwe.com/api/json/adventure/" + id
-				+ "/places.json";
+				+ "/adventurers.json";
 		Log.i("load date", url);
 		ArrayList<JournWeAdventurer> re = loadPlace(url);
 		return re;
@@ -69,9 +69,9 @@ public class AdventurerLoader extends
 
 			for (int i = 0; i < json.length(); i++) {
 				JSONObject j = json.getJSONObject(i);
-				JournWeAdventurer a = new JournWeAdventurer("", "", "", "");
+				JournWeAdventurer a = new JournWeAdventurer("", "", "", "", "");
 				try {
-					a = new JournWeAdventurer(j.getString("id"), j.getString("status"), j.getString("name"), j.getString("link"));
+					a = new JournWeAdventurer(j.getString("id"), j.getString("status"), j.getString("name"), j.getString("link"), j.getString("image"));
 
 				} catch (NumberFormatException e) {
 					Log.i("date exception", e.getStackTrace().toString());

@@ -48,7 +48,7 @@
             <TextView
                 android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
-                android:text="@string/favLocation"
+                android:text="@string/favPlace"
                 android:textSize="17sp"
                 android:layout_marginTop="3dp"
                 android:layout_marginLeft="5dp" />
@@ -57,7 +57,7 @@
                 android:id="@+id/location"
                 android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
-                android:text="no location selected"
+                android:text="@string/favPlaceSelected"
                 android:textSize="17sp"
                 android:layout_marginTop="3dp"
                 android:layout_marginLeft="7dp" />
@@ -90,7 +90,7 @@
         <ListView
             android:id="@+id/placeList"
             android:layout_width="fill_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="25dp" >
         </ListView>
         

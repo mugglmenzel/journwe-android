@@ -1,5 +1,6 @@
 package com.journwe.android;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -38,9 +39,10 @@ public class JournWeDetail extends Activity {
 	private static ListView adventurerList;
 	private static DateAdapter dateAdapter;
 	private static PlaceAdapter placeAdapter;
-	 private static AdventurerAdapter adventurerAdapter;
-	 private static TextView favDate;
-	 private static TextView favPlace;
+	private static AdventurerAdapter adventurerAdapter;
+	private static TextView favDate;
+	private static TextView favPlace;
+	private static SimpleDateFormat dateFormat;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +67,19 @@ public class JournWeDetail extends Activity {
 		new DateLoader(this, trip.getId(), 0).execute(this);
 
 		// new PlaceLoader(this, trip.getId(), 0).execute(this);
-		
+
 		dateAdapter = new DateAdapter(this, R.id.dateList, trip.getDates());
 		placeAdapter = new PlaceAdapter(this, R.id.placeList, trip.getPlaces());
-		 adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerList, trip.getAdventurers());
+		adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerList,
+				trip.getAdventurers());
 
 		detailAdapter = new DetailAdapter(this, R.layout.fragment_show_trip, a);
 
 		if (ll1 != null) {
 			setColor(1);
 		}
+		
+		dateFormat = new SimpleDateFormat("dd/MM");
 	}
 
 	public DetailedTrip getTrip() {
@@ -83,17 +88,23 @@ public class JournWeDetail extends Activity {
 
 	public void setFavDateView(TextView date) {
 		favDate = date;
+
+		Log.i("fav date view", "set");
 		
 		if (trip.getFavoriteDate() != null) {
-			favDate.setText(trip.getFavoriteDate().toString());
+			favDate.setText(dateFormat.format(trip.getFavoriteDate().getStart()) + " - " + dateFormat.format(trip.getFavoriteDate().getEnd()));
+			Log.i("set", "fav date");
 		}
 	}
 
-	public void setFavDatePlace(TextView place) {
+	public void setFavPlaceView(TextView place) {
 		favPlace = place;
-		
+
+		Log.i("fav place view", "set");
+
 		if (trip.getFavoritePlace() != null) {
-			favPlace.setText(trip.getFavoritePlace().toString());
+			favPlace.setText(trip.getFavoritePlace().getPlace());
+			Log.i("set", "fav place");
 		}
 	}
 
@@ -136,9 +147,9 @@ public class JournWeDetail extends Activity {
 
 	public void setAdventurerView(ListView adventurer) {
 		adventurerList = adventurer;
-		
+
 		LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
-		int height = 212*trip.getAdventurers().size();
+		int height = 212 * trip.getAdventurers().size();
 
 		if (height < 212) {
 			height = 212;
@@ -158,13 +169,13 @@ public class JournWeDetail extends Activity {
 			trip.addDate(d);
 
 			Log.i("date values", "s:" + d.getStart() + " e:" + d.getEnd()
-					+ " v:" + d.getVote());
-			
+					+ " v:" + d.getVote() + " f:" + d.getFavorite());
+
 			if (d.getFavorite().equals("true")) {
 				trip.setFavoriteDate(d);
-				
+
 				if (favDate != null) {
-					favDate.setText(d.toString());
+					favDate.setText(dateFormat.format(d.getStart()) + " - " + dateFormat.format(d.getEnd()));
 				}
 			}
 		}
@@ -178,7 +189,16 @@ public class JournWeDetail extends Activity {
 		for (JournWePlace p : places) {
 			trip.addPlace(p);
 
-			Log.i("place", p.getPlace());
+			Log.i("place values", "p:" + p.getPlace()
+					+ " v:" + p.getVote() + " f:" + p.getFavorite());
+
+			if (p.getFavorite().equals("true")) {
+				trip.setFavoritePlace(p);
+
+				if (favPlace != null) {
+					favPlace.setText(p.getPlace());
+				}
+			}
 		}
 
 		if (placeAdapter != null) {
@@ -196,14 +216,14 @@ public class JournWeDetail extends Activity {
 		for (JournWeAdventurer a : adventurers) {
 			trip.addAdventurer(a);
 		}
-		
+
 		if (adventurerAdapter != null) {
 			adventurerAdapter.notifyDataSetChanged();
 		}
-		
+
 		if (adventurerList != null) {
 			LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
-			int height = 212*trip.getAdventurers().size();
+			int height = 212 * trip.getAdventurers().size();
 
 			if (height < 212) {
 				height = 212;
@@ -284,13 +304,13 @@ public class JournWeDetail extends Activity {
 	}
 
 	public void onChat(View view) {
-		Log.i("scroll", "place");
+		Log.i("scroll", "chat");
 
 		setColor(4);
 	}
 
 	public void onCheck(View view) {
-		Log.i("scroll", "place");
+		Log.i("scroll", "check");
 
 		setColor(5);
 	}
@@ -370,6 +390,14 @@ public class JournWeDetail extends Activity {
 
 					if (firstVisibleItem != 0 && firstVisibleItem != selected) {
 						setColor(firstVisibleItem);
+					}
+
+					if (lv.getLastVisiblePosition() == lv.getAdapter()
+							.getCount() - 1
+							&& lv.getChildAt(lv.getChildCount() - 1)
+									.getBottom() <= lv.getHeight()) {
+						setColor(3);
+						Log.i("list", "ende!");
 					}
 				}
 

@@ -69,9 +69,9 @@ public class PlaceLoader extends
 
 			for (int i = 0; i < json.length(); i++) {
 				JSONObject j = json.getJSONObject(i);
-				JournWePlace p = new JournWePlace("", 0);
+				JournWePlace p = new JournWePlace("", 0, "");
 				try {
-					p = new JournWePlace(j.getString("address"), 5*Double.parseDouble(j.getString("voteGroup")));
+					p = new JournWePlace(j.getString("address"), 5*Double.parseDouble(j.getString("voteGroup")), j.getString("favorite"));
 
 				} catch (NumberFormatException e) {
 					Log.i("date exception", e.getStackTrace().toString());

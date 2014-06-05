@@ -181,7 +181,7 @@ public class JournWeDetailActivity extends Activity implements
 
 				JournWeAdventurer ja = new JournWeAdventurer(j.getString("id"),
 						j.getString("status"), j.getString("name"),
-						j.getString("link"));
+						j.getString("link"), j.getString("image"));
 
 				Log.i("object", j.toString());
 			}

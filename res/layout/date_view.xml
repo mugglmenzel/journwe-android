@@ -56,7 +56,7 @@
                 android:id="@+id/favtime"
                 android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
-                android:text="no time selected"
+                android:text="@string/favTimeSelected"
                 android:textSize="17sp"
                 android:layout_marginTop="3dp"
                 android:layout_marginLeft="7dp" />

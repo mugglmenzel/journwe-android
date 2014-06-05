@@ -60,7 +60,7 @@ public class DateAdapter extends ArrayAdapter<JournWeDate> {
 			TextView vote = (TextView) content.findViewById(R.id.datevote);
 
 			date.setText(dateFormat.format(dates.get(position).getStart()) + " - "
-					+ dateFormat.format(dates.get(position).getStart()));
+					+ dateFormat.format(dates.get(position).getEnd()));
 			
 			double v = (double) dates.get(position).getVote();
 			

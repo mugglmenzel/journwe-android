@@ -121,7 +121,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 			content = inflater.inflate(R.layout.place_view, parent, false);
 			detail.setPlaceView((ListView)content.findViewById(R.id.placeList));
 
-			detail.setFavDateView((TextView) content.findViewById(R.id.location));
+			detail.setFavPlaceView((TextView) content.findViewById(R.id.location));
 		}
 
 		else if (position == 2) {
