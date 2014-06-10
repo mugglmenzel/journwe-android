@@ -20,7 +20,6 @@
         android:id="@+id/textv"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:textSize="20sp"
-        android:text="description" />
+        android:textSize="20sp" />
 
 </LinearLayout>

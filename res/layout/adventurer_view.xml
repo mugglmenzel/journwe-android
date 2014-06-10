@@ -14,14 +14,15 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="4dp"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_action_group" />
+            android:src="@drawable/ic_action_group"
+            android:contentDescription="TODO" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
-            android:text="Adventurers"
+            android:text="@string/adventurer"
             android:textSize="25sp" />
     </LinearLayout>
 

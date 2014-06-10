@@ -7,7 +7,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:baselineAligned="false" >
 
         <LinearLayout
             android:id="@+id/ll1"
@@ -100,6 +101,11 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#777777" />
+    
     <ListView
         android:id="@+id/listView1"
         android:layout_width="fill_parent"

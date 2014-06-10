@@ -9,7 +9,8 @@
         android:layout_width="50dp"
         android:src="@drawable/ic_action_new"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:contentDescription="TODO" />
     
     <TextView
         android:layout_height="wrap_content"

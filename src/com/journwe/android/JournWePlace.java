@@ -4,11 +4,31 @@ public class JournWePlace {
 	private String place;
 	private double vote;
 	private String favorite;
+	private double lat;
+	private double lng;
 	
-	public JournWePlace(String place, double vote, String favorite) {
+	public JournWePlace(String place, double vote, String favorite, double lat, double lng) {
 		this.place = place;
 		this.vote = vote;
 		this.favorite = favorite;
+		this.lat = lat;
+		this.lng = lng;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
 	}
 
 	public String getFavorite() {

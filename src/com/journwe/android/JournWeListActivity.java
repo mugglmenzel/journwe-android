@@ -11,6 +11,7 @@ import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -283,14 +284,38 @@ public class JournWeListActivity extends Activity implements
 //				}
 
 				Log.i("image", jsonObject.get("image").toString());
+				Log.i("place", jsonObject.get("favoritePlace").toString());
 
+				String place = "";
+				
+				if (jsonObject.getString("favoritePlace") == null || jsonObject.getString("favoritePlace") == "null") {
+					place = "No place selected";
+				}
+				
+				else {
+					JSONObject json = new JSONObject(jsonObject.getString("favoritePlace"));
+					place = json.getString("address");
+				}
+				
+				String time = "";
+				
+				if (jsonObject.getString("favoriteTime") == null || jsonObject.getString("favoriteTime") == "null") {
+					time = "No time selected";
+				}
+				
+				else {
+					JSONObject json = new JSONObject(jsonObject.getString("favoriteTime"));
+					SimpleDateFormat d = new SimpleDateFormat("dd/MM");
+					time = (d.format(json.getInt("startDate")) + " - " + d.format(json.getInt("endDate")));
+				}
+				
 				Trip t = new Trip(jsonObject.getString("id"),
 						jsonObject.getString("name"),
 						jsonObject.getString("link"),
 						Integer.parseInt(jsonObject.getString("peopleCount")),
 						s, null, jsonObject.getString("imageTimestamp"),
-						jsonObject.getString("favoritePlace"),
-						jsonObject.getString("favoriteTime"), 
+						place,
+						time, 
 						jsonObject.get("image").toString());
 
 				myTrips.add(t);

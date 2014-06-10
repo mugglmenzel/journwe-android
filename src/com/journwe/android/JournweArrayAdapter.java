@@ -56,23 +56,11 @@ public class JournweArrayAdapter extends ArrayAdapter<Trip> {
 			TextView textView4 = (TextView) rowView.findViewById(R.id.t4);
 			TextView textView5 = (TextView) rowView.findViewById(R.id.t5);
 			
-			String place = t.getFavPlace();
-			
-			if (place == null || place == "null") {
-				place = "No place selected";
-			}
-			
-			String time = t.getFavTime();
-			
-			if (time == null || time == "null") {
-				time = "No time selected";
-			}
-			
 			textView1.setText(t.getName());
 			textView2.setText("Status: " + t.getStatus().toString());
 			textView3.setText("Adventurers: " + t.getPeople());
-			textView4.setText("Place: " + place);
-			textView5.setText("Time: " + time);
+			textView4.setText("Place: " + t.getFavPlace());
+			textView5.setText("Time: " + t.getFavTime());
 
 			if (t.getImage() == null) {
 				imageView.setImageResource(R.drawable.ic_launcher);

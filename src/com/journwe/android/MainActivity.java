@@ -154,7 +154,6 @@ public class MainActivity extends FragmentActivity {
 					false);
 
 			authButton = (LoginButton) rootView.findViewById(R.id.authButton);
-			// authButton.setFragment((android.support.v4.app.Fragment) this);
 			authButton.setReadPermissions("email");
 
 			authButton.setVisibility(1);

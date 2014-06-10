@@ -1,8 +1,6 @@
 package com.journwe.android;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.animation.Animator;
@@ -122,6 +120,9 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 			detail.setPlaceView((ListView)content.findViewById(R.id.placeList));
 
 			detail.setFavPlaceView((TextView) content.findViewById(R.id.location));
+			detail.setMap((ImageView) content.findViewById(R.id.map));
+			
+			
 		}
 
 		else if (position == 2) {

@@ -4,13 +4,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -43,6 +58,9 @@ public class JournWeDetail extends Activity {
 	private static TextView favDate;
 	private static TextView favPlace;
 	private static SimpleDateFormat dateFormat;
+	private static ImageView map;
+	private String bitmapURL;
+	private static LayoutParams ll;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +96,58 @@ public class JournWeDetail extends Activity {
 		if (ll1 != null) {
 			setColor(1);
 		}
-		
+
 		dateFormat = new SimpleDateFormat("dd/MM");
+
+		ll = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+	}
+	
+	public String getURL() {
+		return bitmapURL;
+	}
+	
+	public void setURL(String url) {
+		bitmapURL = url;
+	}
+
+	public void setMap(ImageView map) {
+		this.map = map;
+
+		loadMap();
+	}
+
+	public void setGoogleMap(Bitmap result) {
+		trip.setGoogleMap(result);
+		
+		map.setImageBitmap(result);
+	}
+	
+	private void loadMap() {
+		Log.i("load map", "map");
+		
+		if (map != null) {
+			if (trip.getPlaces() != null && trip.getPlaces().size() > 0) {
+				if (trip.getGoogleMap() == null) {
+					String url = "https://maps.google.com/maps/api/staticmap?size=350x350";
+					
+					for (JournWePlace p : trip.getPlaces()) {
+						url += "&markers=color:red|" + p.getLat() + "," + p.getLng();
+					}
+
+					url += "&sensor=false&key=AIzaSyCuMcV-IagEP8k3o8K3q7LcgWjT-AKofqE";
+
+					Log.i("google maps url", url);
+
+					this.bitmapURL = url;
+					
+					new GoogleImageLoader().execute(this);
+				}
+				
+				else {
+					map.setImageBitmap(trip.getGoogleMap());
+				}
+			}
+		}
 	}
 
 	public DetailedTrip getTrip() {
@@ -90,9 +158,12 @@ public class JournWeDetail extends Activity {
 		favDate = date;
 
 		Log.i("fav date view", "set");
-		
+
 		if (trip.getFavoriteDate() != null) {
-			favDate.setText(dateFormat.format(trip.getFavoriteDate().getStart()) + " - " + dateFormat.format(trip.getFavoriteDate().getEnd()));
+			favDate.setText(dateFormat
+					.format(trip.getFavoriteDate().getStart())
+					+ " - "
+					+ dateFormat.format(trip.getFavoriteDate().getEnd()));
 			Log.i("set", "fav date");
 		}
 	}
@@ -107,61 +178,85 @@ public class JournWeDetail extends Activity {
 			Log.i("set", "fav place");
 		}
 	}
+	
+	private int adaptSize(int size) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
+	}
 
 	public void setDateView(ListView date) {
 		dateList = date;
+		
+		setDateSize();
+	}
+	
+	private void setDateSize() {
+		if (dateList != null) {
+			LayoutParams lp = (LayoutParams) dateList.getLayoutParams();
+			int height = trip.getDates().size() * 50;
 
-		LayoutParams lp = (LayoutParams) dateList.getLayoutParams();
-		int height = trip.getDates().size() * 150;
+			if (height < 150) {
+				height = 150;
+			}
 
-		if (height < 150) {
-			height = 150;
+			Log.i("set date list size", height + "");
+
+			lp.height = adaptSize(height);
+			dateList.setLayoutParams(lp);
+
+			dateList.setAdapter(dateAdapter);
+
+			Log.i("set date list size", lp.height + "");
 		}
-
-		lp.height = height;
-		dateList.setLayoutParams(lp);
-
-		dateList.setAdapter(dateAdapter);
-
-		Log.i("set date list size", lp.height + "");
 	}
 
 	public void setPlaceView(ListView place) {
 		placeList = place;
 
-		LayoutParams lp = (LayoutParams) placeList.getLayoutParams();
-		int height = trip.getPlaces().size() * 150;
+		setPlaceSize();
+	}
+	
+	private void setPlaceSize() {
+		if (placeList != null) {
+			LayoutParams lp = (LayoutParams) placeList.getLayoutParams();
+			int height = trip.getPlaces().size() * 50;
 
-		if (height < 150) {
-			height = 150;
+			if (height < 150) {
+				height = 150;
+			}
+
+			Log.i("set place list size", height + "");
+
+			lp.height = adaptSize(height);
+			placeList.setLayoutParams(lp);
+
+			placeList.setAdapter(placeAdapter);
+
+			Log.i("set place list size", lp.height + "");
 		}
-
-		lp.height = height;
-		placeList.setLayoutParams(lp);
-
-		placeList.setAdapter(placeAdapter);
-
-		Log.i("set date list size", lp.height + "");
-
 	}
 
 	public void setAdventurerView(ListView adventurer) {
 		adventurerList = adventurer;
 
+		setAdventurerSize();
+	}
+	
+	private void setAdventurerSize() {
 		LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
-		int height = 212 * trip.getAdventurers().size();
+		int height = trip.getAdventurers().size() * 70;
 
 		if (height < 212) {
 			height = 212;
 		}
 
-		lp.height = height;
+		Log.i("set adventurer list size", height + "");
+
+		lp.height = adaptSize(height);
 		adventurerList.setLayoutParams(lp);
 
 		adventurerList.setAdapter(adventurerAdapter);
 
 		Log.i("set adventurer list size", lp.height + "");
-
 	}
 
 	public void setDate(ArrayList<JournWeDate> result) {
@@ -175,7 +270,8 @@ public class JournWeDetail extends Activity {
 				trip.setFavoriteDate(d);
 
 				if (favDate != null) {
-					favDate.setText(dateFormat.format(d.getStart()) + " - " + dateFormat.format(d.getEnd()));
+					favDate.setText(dateFormat.format(d.getStart()) + " - "
+							+ dateFormat.format(d.getEnd()));
 				}
 			}
 		}
@@ -183,14 +279,17 @@ public class JournWeDetail extends Activity {
 		if (dateAdapter != null) {
 			dateAdapter.notifyDataSetChanged();
 		}
+		
+		setDateSize();
 	}
 
 	public void setPlace(ArrayList<JournWePlace> places) {
+
 		for (JournWePlace p : places) {
 			trip.addPlace(p);
-
-			Log.i("place values", "p:" + p.getPlace()
-					+ " v:" + p.getVote() + " f:" + p.getFavorite());
+			
+			Log.i("place values", "p:" + p.getPlace() + " v:" + p.getVote()
+					+ " f:" + p.getFavorite());
 
 			if (p.getFavorite().equals("true")) {
 				trip.setFavoritePlace(p);
@@ -200,7 +299,7 @@ public class JournWeDetail extends Activity {
 				}
 			}
 		}
-
+		
 		if (placeAdapter != null) {
 			placeAdapter.notifyDataSetChanged();
 		}
@@ -210,6 +309,10 @@ public class JournWeDetail extends Activity {
 			lp.height = trip.getPlaces().size() * 150;
 			placeList.setLayoutParams(lp);
 		}
+		
+		loadMap();
+		
+		setPlaceSize();
 	}
 
 	public void setAdventurer(ArrayList<JournWeAdventurer> adventurers) {
@@ -232,6 +335,8 @@ public class JournWeDetail extends Activity {
 			lp.height = height;
 			adventurerList.setLayoutParams(lp);
 		}
+		
+		setAdventurerSize();
 	}
 
 	public String getId() {

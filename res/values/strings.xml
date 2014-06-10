@@ -20,6 +20,7 @@
     <string name="myStatus">You are : --- Set my status</string>
     <string name="participants">Participants</string>
     <string name="status">Status</string>
+    <string name="place">Place</string>
     <string name="favPlace">Favorite Location:</string>
     <string name="favPlaceSelected">no favorite location selected</string>
     <string name="yourVote">Your Vote:</string>
@@ -36,5 +37,11 @@
     <string name="create_section1">Where?</string>
     <string name="create_section2">Who?</string>
     <string name="create_section3">When?</string>
+    <string name="name">Name</string>
+    <string name="time">Time</string>
+    <string name="people">People</string>
+    <string name="date">Date</string>
+    <string name="vote">Vote</string>
+    <string name="adventurer">Adventurer</string>
 
 </resources>
