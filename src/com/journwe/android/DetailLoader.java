@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -28,11 +29,17 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 	private DetailAdapter detail;
 	private View mSpinner;
 	private int mDuration;
+	private ProgressDialog progress;
 
 	public DetailLoader(DetailAdapter content, View spinner, int duration) {
 		detail = content;
 		mSpinner = spinner;
 		mDuration = duration;
+		progress = new ProgressDialog(content.getContext());
+		progress.setTitle("Loading");
+		progress.setMessage("Wait while loading...");
+		progress.setCanceledOnTouchOutside(false);
+		progress.show();
 	}
 
 	@Override
@@ -86,6 +93,9 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 		Log.i("load", "set image");
 		
 		detail.setDetail(result);
+
+		// To dismiss the dialog
+		progress.dismiss();
 		
 		// Set the image view before the content is shown.
 //		ImageView i = (ImageView) mView.findViewById(R.id.image);

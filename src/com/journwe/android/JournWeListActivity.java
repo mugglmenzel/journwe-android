@@ -24,6 +24,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,7 +61,7 @@ public class JournWeListActivity extends Activity implements
 	private static final String URL_CALL = "/api/json/adventures/my.json";
 	private static CookieManager cookieManager;
 	private static ListView lv;
-	private static List<Trip> myTrips;
+	private static ArrayList<Trip> myTrips;
 	static JournweArrayAdapter adapter;
 	private static String provider;
 	private static JournWeFacebookUser user;
@@ -163,12 +164,13 @@ public class JournWeListActivity extends Activity implements
 
 			Log.i("cookie", cookieManager.getCookieStore().getCookies().size()
 					+ "");
-
+			
+//			new TripLoader().execute(this);
+			
 			call();
 
 			adapter = new JournweArrayAdapter(this,
 					android.R.layout.simple_list_item_1, myTrips);
-			//
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -188,6 +190,19 @@ public class JournWeListActivity extends Activity implements
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateJournWe.class);
+	}
+
+	public Context getContext() {
+		return getApplicationContext();
+	}
+
+	public void setTrips(ArrayList<Trip> result) {
+		myTrips = result;
+		adapter.clear();
+        adapter.addAll(result);
+        adapter.notifyDataSetChanged();
+		
+		Log.i("data changed", myTrips.size() + "");
 	}
 
 	@Override
@@ -245,8 +260,14 @@ public class JournWeListActivity extends Activity implements
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public String getUrl() {
+		return URL_CALL;
+	}
 
 	private static String call() {
+//		new TripLoader().execute(this);
+		
 		String re = "";
 
 		re = dt.doInBackground(URL_CALL);
@@ -279,9 +300,17 @@ public class JournWeListActivity extends Activity implements
 
 				b = null;
 
-//				if (jsonObject.get("image").toString() != null) {
-//					b = bl.doInBackground(jsonObject.get("image").toString());
-//				}
+				if (jsonObject.getString("image").toString() != null) {
+					try {
+						b = BitmapFactory.decodeStream((new URL(jsonObject.getString("image"))).openConnection().getInputStream());
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 
 				Log.i("image", jsonObject.get("image").toString());
 				Log.i("place", jsonObject.get("favoritePlace").toString());
@@ -313,7 +342,7 @@ public class JournWeListActivity extends Activity implements
 						jsonObject.getString("name"),
 						jsonObject.getString("link"),
 						Integer.parseInt(jsonObject.getString("peopleCount")),
-						s, null, jsonObject.getString("imageTimestamp"),
+						s, b, jsonObject.getString("imageTimestamp"),
 						place,
 						time, 
 						jsonObject.get("image").toString());

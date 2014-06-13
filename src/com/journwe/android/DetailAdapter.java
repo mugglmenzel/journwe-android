@@ -33,18 +33,37 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		this.trip = new DetailedTrip(values.get(0));
 		detail = (JournWeDetail) context;
 	}
+	
+	public Context getContext() {
+		return (Context) detail;
+	}
 
 	public void setDetail(Detail d) {
 		// Set the image view before the content is shown.
+		
 		trip.setImage(d.getBitmap());
-		Log.i("image", trip.getImage().toString());
 		ImageView i = (ImageView) view.findViewById(R.id.image);
-		i.setImageBitmap(d.getBitmap());
+		
+
+		if (d.getBitmap() == null) {
+			i.getLayoutParams().height = 0;
+		}
+		
+		else {
+			i.setImageBitmap(d.getBitmap());
+		}
 
 		 trip.setDescription(d.getString());
 		TextView t = (TextView) view.findViewById(R.id.text);
-		t.setText(d.getString());
-
+		
+		if (d.getString() == "null") {
+			t.setText("no description");
+		}
+		
+		else {
+			t.setText(d.getString());
+		}
+		
 		// Set the "show" view to 0% opacity but visible, so that it is visible
 		view.setAlpha(0f);
 		view.setVisibility(View.VISIBLE);

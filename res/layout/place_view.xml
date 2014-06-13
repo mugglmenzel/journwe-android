@@ -118,20 +118,8 @@
     
     <ImageView
         android:id="@+id/map"
-        android:layout_height="350dp"
+        android:layout_height="1dp"
         android:layout_width="fill_parent"
         android:contentDescription="TODO" />
-
-<!--     <com.google.android.gms.maps.MapView -->
-<!--         xmlns:android="http://schemas.android.com/apk/res/android" -->
-<!--         android:id="@+id/mapview" -->
-<!--         android:layout_width="fill_parent" -->
-<!--         android:layout_height="350dp" /> -->
-
-<!--     <fragment -->
-<!--         android:id="@+id/map" -->
-<!--         android:name="com.google.android.gms.maps.MapFragment" -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="350dp" /> -->
 
 </LinearLayout>

@@ -164,6 +164,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void login() {
+		if (authButton != null) {
+			authButton.setVisibility(View.GONE);
+		}
+		
 		final Intent intent = new Intent(this, JournWeListActivity.class);
 
 		Log.i("login", "start");

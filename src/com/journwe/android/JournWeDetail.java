@@ -119,7 +119,14 @@ public class JournWeDetail extends Activity {
 	public void setGoogleMap(Bitmap result) {
 		trip.setGoogleMap(result);
 		
-		map.setImageBitmap(result);
+		if (result == null) {
+			map.getLayoutParams().height = 1;
+		}
+		
+		else {
+			map.getLayoutParams().height = adaptSize(350);
+			map.setImageBitmap(result);
+		}
 	}
 	
 	private void loadMap() {
@@ -144,7 +151,14 @@ public class JournWeDetail extends Activity {
 				}
 				
 				else {
-					map.setImageBitmap(trip.getGoogleMap());
+					if (trip.getGoogleMap() == null) {
+						map.getLayoutParams().height = 1;
+					}
+					
+					else {
+						map.getLayoutParams().height = adaptSize(350);
+						map.setImageBitmap(trip.getGoogleMap());
+					}
 				}
 			}
 		}
@@ -194,9 +208,9 @@ public class JournWeDetail extends Activity {
 			LayoutParams lp = (LayoutParams) dateList.getLayoutParams();
 			int height = trip.getDates().size() * 50;
 
-			if (height < 150) {
-				height = 150;
-			}
+//			if (height < 150) {
+//				height = 150;
+//			}
 
 			Log.i("set date list size", height + "");
 
@@ -219,9 +233,11 @@ public class JournWeDetail extends Activity {
 		if (placeList != null) {
 			LayoutParams lp = (LayoutParams) placeList.getLayoutParams();
 			int height = trip.getPlaces().size() * 50;
+			
+			Log.i("place list length", trip.getPlaces().size() + "");
 
-			if (height < 150) {
-				height = 150;
+			if (height == 0) {
+				height = 1;
 			}
 
 			Log.i("set place list size", height + "");
@@ -245,8 +261,8 @@ public class JournWeDetail extends Activity {
 		LayoutParams lp = (LayoutParams) adventurerList.getLayoutParams();
 		int height = trip.getAdventurers().size() * 70;
 
-		if (height < 212) {
-			height = 212;
+		if (height == 0) {
+			height = 1;
 		}
 
 		Log.i("set adventurer list size", height + "");
