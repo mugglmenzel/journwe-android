@@ -289,7 +289,7 @@ public class JournWeDetailActivity extends Activity implements
 			
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
 				String description = dt.doInBackground("/api/json/adventure/" + trip.getId() + "/info.json");
-				rootView = inflater.inflate(R.layout.load_detail, container, false);
+				rootView = inflater.inflate(R.layout.journwe_detail, container, false);
 				
 				View loadView = rootView.findViewById(R.id.loading_spinner);
 				View content = rootView.findViewById(R.id.detailcontent);

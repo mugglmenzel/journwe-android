@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 public class TripLoader extends
@@ -31,14 +32,7 @@ public class TripLoader extends
 
 	@Override
 	protected ArrayList<Trip> doInBackground(JournWeListActivity... activity) {
-		
 		this.a = activity[0];
-		
-		progress = new ProgressDialog(a);
-		progress.setTitle("Loading");
-		progress.setMessage("Wait while loading...");
-		progress.setCanceledOnTouchOutside(false);
-		progress.show();
 		
 		HttpURLConnection connection;
 		InputStream input;
@@ -159,7 +153,6 @@ public class TripLoader extends
 	@Override
 	protected void onPostExecute(ArrayList<Trip> result) {
 		a.setTrips(result);
-		progress.dismiss();
 	}
 
 	private Bitmap download_Image(String url) {

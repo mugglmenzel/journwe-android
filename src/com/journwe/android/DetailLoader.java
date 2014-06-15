@@ -24,17 +24,12 @@ import android.widget.TextView;
 
 public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 
-	// reference to our imageview
 	private View mView;
 	private DetailAdapter detail;
-	private View mSpinner;
-	private int mDuration;
 	private ProgressDialog progress;
 
-	public DetailLoader(DetailAdapter content, View spinner, int duration) {
+	public DetailLoader(DetailAdapter content) {
 		detail = content;
-		mSpinner = spinner;
-		mDuration = duration;
 		progress = new ProgressDialog(content.getContext());
 		progress.setTitle("Loading");
 		progress.setMessage("Wait while loading...");
@@ -44,7 +39,15 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 
 	@Override
 	protected Detail doInBackground(DetailAdapter... params) {
-		mView = params[0].getView();
+		detail = params[0];
+		mView = detail.getView();
+		
+//		progress = new ProgressDialog(detail.getContext());
+//		progress.setTitle("Loading");
+//		progress.setMessage("Wait while loading...");
+//		progress.setCanceledOnTouchOutside(false);
+//		progress.show();
+		
 		ImageView i = (ImageView) mView.findViewById(R.id.image);
 		String url = (String) i.getTag();
 		Log.i("load", "image " + url);

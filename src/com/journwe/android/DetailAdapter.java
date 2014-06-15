@@ -24,7 +24,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 	private DetailedTrip trip;
 	private JournWeDetail detail;
 	private View view;
-	private View spinner;
+//	private View spinner;
 
 	public DetailAdapter(Context context, int ViewResourceId, List<Trip> objects) {
 		super(context, ViewResourceId, objects);
@@ -71,15 +71,6 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		// Animate the "show" view to 100% opacity, and clear any animation
 		// listener set on the view.
 		view.animate().alpha(1f).setDuration(400).setListener(null);
-
-		// Animate the "hide" view to 0% opacity.
-		spinner.animate().alpha(0f).setDuration(400)
-				.setListener(new AnimatorListenerAdapter() {
-					@Override
-					public void onAnimationEnd(Animator animation) {
-						spinner.setVisibility(View.GONE);
-					}
-				});
 	}
 
 	public View getView() {
@@ -98,9 +89,8 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		View content = null;
 
 		if (position == 0) {
-			content = inflater.inflate(R.layout.load_detail, parent, false);
+			content = inflater.inflate(R.layout.journwe_detail, parent, false);
 
-			spinner = content.findViewById(R.id.loading_spinner);
 			view = content.findViewById(R.id.detail);
 
 			ImageView i = (ImageView) content.findViewById(R.id.image);
@@ -111,22 +101,16 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 					+ trip.getId() + "/info.json");
 
 			if (trip.getImage() == null) {
-
-				view.setVisibility(View.GONE);
-
-				int duration = 400;
-
-				new DetailLoader(this, spinner, duration).execute(this);
+				new DetailLoader(this).execute(this);
 			}
 
 			else {
 				t.setText(trip.getDescription());
 				i.setImageBitmap(trip.getImage());
-				spinner.setVisibility(View.GONE);
 			}
 
 			FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
 
 			layoutParams.setMargins(10, 10, 10, 0);

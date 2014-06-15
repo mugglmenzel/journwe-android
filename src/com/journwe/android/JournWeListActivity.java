@@ -37,7 +37,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class JournWeListActivity extends Activity implements
@@ -65,10 +67,7 @@ public class JournWeListActivity extends Activity implements
 	static JournweArrayAdapter adapter;
 	private static String provider;
 	private static JournWeFacebookUser user;
-	private static Downloader dt;
-	private static Bitmap b;
-//	private static BitmapLoader bl;
-	public static Bitmap icon;
+	private static LinearLayout progress;
 
 	private static Intent intentDetail;
 	private static Intent intentAdd;
@@ -76,13 +75,8 @@ public class JournWeListActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_journ_we);
 		
-		icon = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.ic_launcher);
-
-		dt = new Downloader(this);
-//		bl = new BitmapLoader(this);
+		setContentView(R.layout.activity_journ_we);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
@@ -192,17 +186,19 @@ public class JournWeListActivity extends Activity implements
 		intentAdd = new Intent(this, CreateJournWe.class);
 	}
 
-	public Context getContext() {
-		return getApplicationContext();
-	}
-
 	public void setTrips(ArrayList<Trip> result) {
 		myTrips = result;
+		
+		if (lv != null) {
+			lv.setAdapter(adapter);
+		}
 		adapter.clear();
         adapter.addAll(result);
         adapter.notifyDataSetChanged();
 		
 		Log.i("data changed", myTrips.size() + "");
+		
+		progress.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -265,103 +261,8 @@ public class JournWeListActivity extends Activity implements
 		return URL_CALL;
 	}
 
-	private static String call() {
-//		new TripLoader().execute(this);
-		
-		String re = "";
-
-		re = dt.doInBackground(URL_CALL);
-
-		JSONArray jsonArray;
-		myTrips = new ArrayList<Trip>();
-
-		try {
-			jsonArray = new JSONArray(re);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				Status s = null;
-				String stat = jsonObject.getString("status");
-
-				if (stat.equals("GOING")) {
-					s = Status.GOING;
-				}
-
-				else if (stat.equals("BOOKED")) {
-					s = Status.BOOKED;
-				}
-
-				else if (stat.equals("NOTGOING")) {
-					s = Status.NOTGOING;
-				}
-
-				else {
-					s = Status.UNDECIDED;
-				}
-
-				b = null;
-
-				if (jsonObject.getString("image").toString() != null) {
-					try {
-						b = BitmapFactory.decodeStream((new URL(jsonObject.getString("image"))).openConnection().getInputStream());
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				Log.i("image", jsonObject.get("image").toString());
-				Log.i("place", jsonObject.get("favoritePlace").toString());
-
-				String place = "";
-				
-				if (jsonObject.getString("favoritePlace") == null || jsonObject.getString("favoritePlace") == "null") {
-					place = "No place selected";
-				}
-				
-				else {
-					JSONObject json = new JSONObject(jsonObject.getString("favoritePlace"));
-					place = json.getString("address");
-				}
-				
-				String time = "";
-				
-				if (jsonObject.getString("favoriteTime") == null || jsonObject.getString("favoriteTime") == "null") {
-					time = "No time selected";
-				}
-				
-				else {
-					JSONObject json = new JSONObject(jsonObject.getString("favoriteTime"));
-					SimpleDateFormat d = new SimpleDateFormat("dd/MM");
-					time = (d.format(json.getInt("startDate")) + " - " + d.format(json.getInt("endDate")));
-				}
-				
-				Trip t = new Trip(jsonObject.getString("id"),
-						jsonObject.getString("name"),
-						jsonObject.getString("link"),
-						Integer.parseInt(jsonObject.getString("peopleCount")),
-						s, b, jsonObject.getString("imageTimestamp"),
-						place,
-						time, 
-						jsonObject.get("image").toString());
-
-				myTrips.add(t);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		//
-		// } catch (MalformedURLException e) {
-		// re = "MalformedURLException";
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// re = "IOException";
-		// e.printStackTrace();
-		// }
-
-		return re;
+	private void call() {
+		new TripLoader().execute(this);
 	}
 
 	/**
@@ -395,16 +296,22 @@ public class JournWeListActivity extends Activity implements
 					container, false);
 
 			Log.i("start", "call");
+			
+			progress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
+			
+			if (progress == null) {
+				Log.i("progressbar", "null");
+			}
+			
+			else {
+				Log.i("progressbar", progress.toString());
+			}
 
 			if (myTrips == null) {
-				call();
+//				call();
 			}
 
 			lv = (ListView) rootView.findViewById(R.id.listview);
-
-			if (lv != null) {
-				lv.setAdapter(adapter);
-			}
 
 			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
