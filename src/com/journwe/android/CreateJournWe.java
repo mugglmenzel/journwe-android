@@ -1,22 +1,35 @@
 package com.journwe.android;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.GoogleMap;
 
 public class CreateJournWe extends Activity implements ActionBar.TabListener {
 
@@ -33,6 +46,20 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	private static GoogleMap map;
+	private static Button invite;
+	private static Button pick;
+	private static Button start;
+	private static Button startButton;
+	private static Button endButton;
+	private Dialog d;
+	private static Date startDate;
+	private static Date endDate;
+	private static SimpleDateFormat format;
+	private String dialog;
+	private static ArrayList<JournWeDate> dates;
+	private static DateAdapter dateAdapter;
+	private static DetailedTrip trip;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +99,86 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		format = new SimpleDateFormat();
+		
+//		trip = new DetailedTrip
+		
+		dates = new ArrayList<JournWeDate>();
+		
+		dateAdapter = new DateAdapter(this, R.id.datelist, dates);
+		
+		
+	}
+
+	public void buttonClick(View v) {
+		switch (v.getId()) {
+		case R.id.invite:
+			Log.i("buttonClick", "invite");
+			mViewPager.setCurrentItem(1);
+			break;
+		case R.id.pick:
+			Log.i("buttonClick", "pick");
+			mViewPager.setCurrentItem(2);
+			break;
+		case R.id.start:
+			Log.i("buttonClick", "start");
+			create();
+			break;
+		case R.id.add:
+			Log.i("buttonClick", "add");
+			if (startDate != null && endDate != null) {
+				dates.add(new JournWeDate(startDate, endDate, 0, "false"));
+			}
+			break;
+		}
+	}
+
+	public void dateClick(View v) {
+		Log.i("dateClick", (String) v.getTag());
+		d = new Dialog((Context) this);
+		d.setContentView(R.layout.date_time_picker);
+		dialog = (String) v.getTag();
+		d.setTitle(dialog);
+		Button ok = (Button) d.findViewById(R.id.ok);
+		// if button is clicked, close the custom dialog
+		ok.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DatePicker datePicker = ((DatePicker) d.findViewById(R.id.datePicker));
+				TimePicker timePicker = ((TimePicker) d.findViewById(R.id.timePicker));
+				
+				if (dialog.equals("Start")) {
+					startDate = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+					
+					startButton.setText(format.format(startDate));
+				}
+				
+				else if (dialog.equals("End")) {
+					endDate = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+					
+					endButton.setText(format.format(endDate));
+				}
+				
+				d.dismiss();
+			}
+		});
+
+		d.show();
+	}
+
+	private void create() {
+		if (startButton != null) {
+			startDate = null;
+		}
+		
+		if (endButton != null) {
+			endDate = null;
+		}
+		
+		Toast.makeText(getApplicationContext(), "JournWe wird erstellt", Toast.LENGTH_SHORT).show();
+
+		finish();
 	}
 
 	@Override
@@ -149,6 +256,17 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 			}
 			return null;
 		}
+
+		View.OnClickListener myhandler1 = new View.OnClickListener() {
+			public void onClick(View v) {
+				// it was the 1st button
+			}
+		};
+		View.OnClickListener myhandler2 = new View.OnClickListener() {
+			public void onClick(View v) {
+				// it was the 2nd button
+			}
+		};
 	}
 
 	/**
@@ -178,33 +296,50 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			
+
 			View rootView = null;
 			TextView textView;
-			
+
 			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-				rootView = inflater.inflate(R.layout.fragment_create_journ_we_place,
-						container, false);
-				textView = (TextView) rootView
-						.findViewById(R.id.section_label);
+				rootView = inflater.inflate(
+						R.layout.fragment_create_journ_we_place, container,
+						false);
+				textView = (TextView) rootView.findViewById(R.id.section_label);
+
+				// map = (((MapFragment) getFragmentManager().findFragmentById(
+				// R.id.mapview)).getMap());
 			}
-			
+
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-				rootView = inflater.inflate(R.layout.fragment_create_journ_we_adventurer,
+				rootView = inflater.inflate(
+						R.layout.fragment_create_journ_we_adventurer,
 						container, false);
-				textView = (TextView) rootView
-						.findViewById(R.id.section_label);
+				textView = (TextView) rootView.findViewById(R.id.section_label);
 			}
-			
+
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-				rootView = inflater.inflate(R.layout.fragment_create_journ_we_date,
-						container, false);
-				textView = (TextView) rootView
-						.findViewById(R.id.section_label);
+				rootView = inflater.inflate(
+						R.layout.fragment_create_journ_we_date, container,
+						false);
+				textView = (TextView) rootView.findViewById(R.id.section_label);
+				
+				startButton = (Button) rootView.findViewById(R.id.startButton);
+				
+				if (startDate != null) {
+					startButton.setText(format.format(startDate));
+				}
+				
+				endButton = (Button) rootView.findViewById(R.id.endButton);
+				
+				if (endDate != null) {
+					endButton.setText(format.format(endDate));
+				}
+				
+				ListView lv = (ListView) rootView.findViewById(R.id.datelist);
+				lv.setAdapter(dateAdapter);
 			}
-			
+
 			return rootView;
 		}
 	}
-
 }

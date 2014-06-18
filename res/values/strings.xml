@@ -43,5 +43,13 @@
     <string name="date">Date</string>
     <string name="vote">Vote</string>
     <string name="adventurer">Adventurer</string>
+    <string name="invite">Invite your Friends >></string>
+    <string name="or">or</string>
+    <string name="start">Start your JournWe</string>
+    <string name="pick">Pick some Dates >></string>
+    <string name="title_activity_create_place">CreatePlace</string>
+    <string name="title_activity_create_adventurer">CreateAdventurer</string>
+    <string name="title_activity_create_date">CreateDate</string>
+    <string name="add">Add</string>
 
 </resources>
