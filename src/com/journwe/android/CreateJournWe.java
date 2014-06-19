@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -57,9 +58,11 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 	private static Date endDate;
 	private static SimpleDateFormat format;
 	private String dialog;
-	private static ArrayList<JournWeDate> dates;
 	private static DateAdapter dateAdapter;
+	private static AdventurerAdapter adventurerAdapter;
+	private static PlaceAdapter placeAdapter;
 	private static DetailedTrip trip;
+	private static EditText adventurerText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,13 +105,15 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		
 		format = new SimpleDateFormat();
 		
-//		trip = new DetailedTrip
+		if (trip == null) {
+			trip = new DetailedTrip("id", "name", "link", 0, Status.GOING, null, "", "", "", "");
+		}
 		
-		dates = new ArrayList<JournWeDate>();
+		dateAdapter = new DateAdapter(this, R.id.datelist, trip.getDates());
 		
-		dateAdapter = new DateAdapter(this, R.id.datelist, dates);
+		adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerlist, trip.getAdventurers());
 		
-		
+		placeAdapter = new PlaceAdapter(this, R.id.placelist, trip.getPlaces());
 	}
 
 	public void buttonClick(View v) {
@@ -125,11 +130,32 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 			Log.i("buttonClick", "start");
 			create();
 			break;
-		case R.id.add:
-			Log.i("buttonClick", "add");
+		case R.id.addDate:
+			Log.i("buttonClick", "addDate");
 			if (startDate != null && endDate != null) {
-				dates.add(new JournWeDate(startDate, endDate, 0, "false"));
+				trip.addDate(new JournWeDate(startDate, endDate, 0, "false"));
+				dateAdapter.notifyDataSetChanged();
+				startDate = null;
+				endDate = null;
+				startButton.setText(R.string.timeStartHint);
+				endButton.setText(R.string.timeEndHint);
 			}
+			break;
+		case R.id.addAdventurer:
+			Log.i("buttonClick", "addAdventurer");
+			if (adventurerText != null && !adventurerText.getText().equals(null) && adventurerText.getText().length() > 0) {
+				trip.addAdventurer(new JournWeAdventurer("", Status.UNDECIDED.toString(), adventurerText.getText().toString(), "", ""));
+				adventurerAdapter.notifyDataSetChanged();
+				adventurerText.setText("");
+			}
+			break;
+		case R.id.addPlace:
+			Log.i("buttonClick", "addPlace");
+//			if (adventurerText != null && !adventurerText.getText().equals(null) && adventurerText.getText().length() > 0) {
+//				trip.addAdventurer(new JournWeAdventurer("", Status.UNDECIDED.toString(), adventurerText.getText().toString(), "", ""));
+//				adventurerAdapter.notifyDataSetChanged();
+//				adventurerText.setText("");
+//			}
 			break;
 		}
 	}
@@ -175,6 +201,8 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		if (endButton != null) {
 			endDate = null;
 		}
+		
+		trip = null;
 		
 		Toast.makeText(getApplicationContext(), "JournWe wird erstellt", Toast.LENGTH_SHORT).show();
 
@@ -305,6 +333,9 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 						R.layout.fragment_create_journ_we_place, container,
 						false);
 				textView = (TextView) rootView.findViewById(R.id.section_label);
+				
+				ListView lv = (ListView) rootView.findViewById(R.id.placelist);
+				lv.setAdapter(placeAdapter);
 
 				// map = (((MapFragment) getFragmentManager().findFragmentById(
 				// R.id.mapview)).getMap());
@@ -315,6 +346,13 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 						R.layout.fragment_create_journ_we_adventurer,
 						container, false);
 				textView = (TextView) rootView.findViewById(R.id.section_label);
+				
+				ListView lv = (ListView) rootView.findViewById(R.id.adventurerlist);
+				lv.setAdapter(adventurerAdapter);
+				
+				if (adventurerText == null) {
+					adventurerText = (EditText) rootView.findViewById(R.id.adventurertext);
+				}
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {

@@ -1,8 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context="com.journwe.android.CreateJournWe$PlaceholderFragment" >
 
@@ -30,6 +32,7 @@
             android:orientation="horizontal" >
 
             <EditText
+                android:id="@+id/placetext"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
@@ -37,30 +40,43 @@
                 android:maxLines="1" />
 
             <Button
+                android:id="@+id/addPlace"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_action_new" />
+                android:background="@drawable/ic_action_new"
+                android:onClick="buttonClick" />
         </LinearLayout>
     </LinearLayout>
+    
+    <ListView
+        android:id="@+id/placelist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#99ffffff" >
+        
+    </ListView>
 
-<!--     <com.google.android.maps.MapView -->
-<!--         xmlns:android="http://schemas.android.com/apk/res/android" -->
-<!--         android:id="@+id/mapview" -->
-<!--         android:layout_width="fill_parent" -->
-<!--         android:layout_height="200dp" -->
-<!--         android:apiKey="AIzaSyCuMcV-IagEP8k3o8K3q7LcgWjT-AKofqE" -->
-<!--         android:clickable="true" -->
-<!--         android:layout_below="@+id/l1" /> -->
+    <!-- <com.google.android.maps.MapView -->
+    <!-- xmlns:android="http://schemas.android.com/apk/res/android" -->
+    <!-- android:id="@+id/mapview" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="200dp" -->
+    <!-- android:apiKey="AIzaSyCuMcV-IagEP8k3o8K3q7LcgWjT-AKofqE" -->
+    <!-- android:clickable="true" -->
+    <!-- android:layout_below="@+id/l1" /> -->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:background="@drawable/border" >
 
         <Button
@@ -71,13 +87,13 @@
             android:layout_centerHorizontal="true"
             android:background="#ffffff"
             android:minHeight="1dp"
+            android:onClick="buttonClick"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:text="@string/invite"
-            android:textStyle="bold"
-            android:onClick="buttonClick" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text"
@@ -97,10 +113,10 @@
             android:layout_centerHorizontal="true"
             android:background="#ffffff"
             android:minHeight="1dp"
+            android:onClick="buttonClick"
             android:padding="5dp"
             android:text="@string/start"
-            android:textSize="15sp"
-            android:onClick="buttonClick" />
+            android:textSize="15sp" />
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

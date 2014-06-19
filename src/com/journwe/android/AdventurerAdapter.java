@@ -14,22 +14,24 @@ import android.widget.TextView;
 
 public class AdventurerAdapter extends ArrayAdapter<JournWeAdventurer> {
 
-	private JournWeDetail context;
+	private JournWeDetail detail;
 	private ArrayList<JournWeAdventurer> adventurers;
+	private Context context;
 
 	public AdventurerAdapter(Context context, int ViewResourceId, List<JournWeAdventurer> objects) {
 		super(context, ViewResourceId, objects);
-		this.context = (JournWeDetail) context;
+		this.context = context;
+		if (context instanceof JournWeDetail) {
+			this.detail = (JournWeDetail) context;
+		}
 		this.adventurers = (ArrayList<JournWeAdventurer>) objects;
 	}
 	
 	public void setAdventurer(ArrayList<JournWeAdventurer> a) {
-		context.setAdventurer(a);
+		detail.setAdventurer(a);
 	}
 
 	public int getCount() {
-		Log.i("log size", adventurers.size()+"");
-		
 		if (adventurers.size() == 0) {
 			return 1;
 		}
@@ -52,7 +54,9 @@ public class AdventurerAdapter extends ArrayAdapter<JournWeAdventurer> {
 			name.setText("no people invited jet");
 			status.setText("");
 			
-			new AdventurerLoader(this, context.getTrip().getId(), 0).execute(this);
+			if (detail != null) {
+				new AdventurerLoader(this, detail.getTrip().getId(), 0).execute(this);
+			}
 		}
 		
 		else if (adventurers.size() >= position) {

@@ -76,6 +76,8 @@ public class JournWeListActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Log.i("savedinstancestate", (savedInstanceState == null) +"");
+		
 		setContentView(R.layout.activity_journ_we);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()

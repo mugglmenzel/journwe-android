@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,27 +27,41 @@
             android:orientation="horizontal" >
 
             <EditText
+                android:id="@+id/adventurertext"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:hint="@string/adventurerHint" />
 
             <Button
+                android:id="@+id/addAdventurer"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_action_new" />
+                android:background="@drawable/ic_action_new"
+                android:onClick="buttonClick" />
         </LinearLayout>
     </LinearLayout>
 
+    <ListView
+        android:id="@+id/adventurerlist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#99ffffff" >
+        
+    </ListView>
+    
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:background="@drawable/border" >
 
         <Button
@@ -90,4 +104,4 @@
             android:onClick="buttonClick" />
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

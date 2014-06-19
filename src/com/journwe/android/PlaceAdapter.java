@@ -14,17 +14,24 @@ import android.widget.TextView;
 
 public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 
-	private JournWeDetail context;
+	private JournWeDetail detail;
 	private ArrayList<JournWePlace> places;
+	private Context context;
+	
 
 	public PlaceAdapter(Context context, int ViewResourceId, List<JournWePlace> objects) {
 		super(context, ViewResourceId, objects);
-		this.context = (JournWeDetail) context;
+		this.context = context;
+		
+		if (context instanceof JournWeDetail) {
+			this.detail = (JournWeDetail) context;
+		}
+		
 		this.places = (ArrayList<JournWePlace>) objects;
 	}
 	
 	public void setPlace(ArrayList<JournWePlace> p) {
-		context.setPlace(p);
+		detail.setPlace(p);
 	}
 
 	public int getCount() {
@@ -50,9 +57,9 @@ public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 			
 			place.setText("No places");
 			
-			Log.i("place", "!!!!!!!!!!!0!!!!!!!!!");
-			
-			new PlaceLoader(this, context.getTrip().getId(), 0).execute(this);
+			if (detail != null) {
+				new PlaceLoader(this, detail.getTrip().getId(), 0).execute(this);
+			}
 		}
 		
 		else if (places.size() >= position) {
