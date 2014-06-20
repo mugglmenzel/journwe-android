@@ -1,9 +1,6 @@
 package com.journwe.android;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -11,45 +8,48 @@ import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class JournWeListActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class JournWeListActivity extends ActionBarActivity {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
 	 */
-	private NavigationDrawerFragment mNavigationDrawerFragment;
+//	private NavigationDrawerFragment mNavigationDrawerFragment;
+	private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private CharSequence mDrawerTitle;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -75,11 +75,45 @@ public class JournWeListActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		Log.i("savedinstancestate", (savedInstanceState == null) +"");
-		
+
 		setContentView(R.layout.activity_journ_we);
 
+        mTitle = mDrawerTitle = getTitle();
+		mPlanetTitles = new String[] {"My JournWes", "ID", "Name"};
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    
+        
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.textview, mPlanetTitles));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+       
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -160,9 +194,9 @@ public class JournWeListActivity extends Activity implements
 
 			Log.i("cookie", cookieManager.getCookieStore().getCookies().size()
 					+ "");
-			
-//			new TripLoader().execute(this);
-			
+
+			// new TripLoader().execute(this);
+
 			call();
 
 			adapter = new JournweArrayAdapter(this,
@@ -176,42 +210,91 @@ public class JournWeListActivity extends Activity implements
 			Log.i("exception", e.getMessage());
 		}
 
-		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-				.findFragmentById(R.id.navigation_drawer);
+//		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
+//				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+//		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+//				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateJournWe.class);
 	}
+	
+	/* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+        // Handle your other action bar items...
+
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		
+        return super.onOptionsItemSelected(item);
+    }
+
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle action bar item clicks here. The action bar will
+//		// automatically handle clicks on the Home/Up button, so long
+//		// as you specify a parent activity in AndroidManifest.xml.
+//		return super.onOptionsItemSelected(item);
+//	}
+
 
 	public void setTrips(ArrayList<Trip> result) {
 		myTrips = result;
-		
+
 		if (lv != null) {
 			lv.setAdapter(adapter);
 		}
 		adapter.clear();
-        adapter.addAll(result);
-        adapter.notifyDataSetChanged();
-		
+		adapter.addAll(result);
+		adapter.notifyDataSetChanged();
+
 		Log.i("data changed", myTrips.size() + "");
-		
-		progress.setVisibility(View.GONE);
+
+		if (progress != null) {
+			progress.setVisibility(View.GONE);
+		}
 	}
 
-	@Override
-	public void onNavigationDrawerItemSelected(int position) {
+//	@Override
+//	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager
-				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
-	}
+//		android.app.FragmentManager fragmentManager = getFragmentManager();
+//		fragmentManager
+//				.beginTransaction()
+//				.replace(R.id.container,
+//						PlaceholderFragment.newInstance(position + 1)).commit();
+//	}
 
 	public void onSectionAttached(int number) {
 		switch (number) {
@@ -228,7 +311,7 @@ public class JournWeListActivity extends Activity implements
 	}
 
 	public void restoreActionBar() {
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
@@ -236,29 +319,17 @@ public class JournWeListActivity extends Activity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-			// Only show items in the action bar relevant to this screen
-			// if the drawer is not showing. Otherwise, let the drawer
-			// decide what to show in the action bar.
-			getMenuInflater().inflate(R.menu.journ_we, menu);
-			restoreActionBar();
-			return true;
-		}
+//		if (!mNavigationDrawerFragment.isDrawerOpen()) {
+//			// Only show items in the action bar relevant to this screen
+//			// if the drawer is not showing. Otherwise, let the drawer
+//			// decide what to show in the action bar.
+//			getMenuInflater().inflate(R.menu.journ_we, menu);
+//			restoreActionBar();
+//			return true;
+//		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
 	public String getUrl() {
 		return URL_CALL;
 	}
@@ -266,6 +337,70 @@ public class JournWeListActivity extends Activity implements
 	private void call() {
 		new TripLoader().execute(this);
 	}
+	
+//	@Override
+//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//			Bundle savedInstanceState) {
+//		View rootView = inflater.inflate(R.layout.fragment_journ_we,
+//				container, false);
+//
+//		if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+//			Log.i("start", "call");
+//
+//			progress = (LinearLayout) rootView
+//					.findViewById(R.id.linlaHeaderProgress);
+//
+//			if (progress == null) {
+//				Log.i("progressbar", "null");
+//			}
+//
+//			else {
+//				Log.i("progressbar", progress.toString());
+//			}
+//
+//			if (myTrips == null) {
+//				// call();
+//			}
+//
+//			lv = (ListView) rootView.findViewById(R.id.listview);
+//
+//			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//				@Override
+//				public void onItemClick(AdapterView<?> parent,
+//						final View view, int position, long id) {
+//
+//					if (position == 0) {
+//						startActivity(intentAdd);
+//					}
+//
+//					else {
+//						Trip item = (Trip) parent
+//								.getItemAtPosition(position - 1);
+//						Log.i("click", item.toString());
+//
+//						item.setImage(null);
+//
+//						intentDetail.putExtra(SEND_TRIP, item);
+//						startActivity(intentDetail);
+//					}
+//
+//				}
+//
+//			});
+//
+//		}
+//
+//		else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+//
+//		}
+//
+//		else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+//
+//		}
+//
+//		return rootView;
+//	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -297,59 +432,60 @@ public class JournWeListActivity extends Activity implements
 			View rootView = inflater.inflate(R.layout.fragment_journ_we,
 					container, false);
 
-			Log.i("start", "call");
-			
-			progress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
-			
-			if (progress == null) {
-				Log.i("progressbar", "null");
-			}
-			
-			else {
-				Log.i("progressbar", progress.toString());
-			}
+//			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+				Log.i("start", "call");
 
-			if (myTrips == null) {
-//				call();
-			}
+				progress = (LinearLayout) rootView
+						.findViewById(R.id.linlaHeaderProgress);
 
-			lv = (ListView) rootView.findViewById(R.id.listview);
-
-			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, final View view,
-						int position, long id) {
-					
-					if (position == 0) {
-						startActivity(intentAdd);
-					}
-					
-					else {
-						Trip item = (Trip) parent.getItemAtPosition(position-1);
-						Log.i("click", item.toString());
-						
-						item.setImage(null);
-						
-						intentDetail.putExtra(SEND_TRIP, item);
-						startActivity(intentDetail);
-					}
-					
+				if (progress == null) {
+					Log.i("progressbar", "null");
 				}
 
-			});
+				else {
+					Log.i("progressbar", progress.toString());
+				}
 
-			if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+				if (myTrips == null) {
+					// call();
+				}
 
-			}
+				lv = (ListView) rootView.findViewById(R.id.listview);
 
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+				lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-			}
+					@Override
+					public void onItemClick(AdapterView<?> parent,
+							final View view, int position, long id) {
 
-			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+						if (position == 0) {
+							startActivity(intentAdd);
+						}
 
-			}
+						else {
+							Trip item = (Trip) parent
+									.getItemAtPosition(position - 1);
+							Log.i("click", item.toString());
+
+							item.setImage(null);
+
+							intentDetail.putExtra(SEND_TRIP, item);
+							startActivity(intentDetail);
+						}
+
+					}
+
+				});
+
+//			}
+//
+//			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+//
+//			}
+//
+//			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+//
+//			}
 
 			return rootView;
 		}
@@ -361,4 +497,34 @@ public class JournWeListActivity extends Activity implements
 					.getInt(ARG_SECTION_NUMBER));
 		}
 	}
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+	    @Override
+	    public void onItemClick(AdapterView parent, View view, int position, long id) {
+	        selectItem(position);
+	    }
+	}
+
+	/** Swaps fragments in the main content view */
+	private void selectItem(int position) {
+	    // Create a new fragment and specify the planet to show based on position
+	    Fragment fragment = new Fragment();
+
+	    // Insert the fragment by replacing any existing fragment
+	    FragmentManager fragmentManager = getSupportFragmentManager();
+	    fragmentManager.beginTransaction()
+	                   .replace(R.id.container, fragment)
+	                   .commit();
+
+	    // Highlight the selected item, update the title, and close the drawer
+	    mDrawerList.setItemChecked(position, true);
+	    setTitle(mPlanetTitles[position]);
+	    mDrawerLayout.closeDrawer(mDrawerList);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+	    mTitle = title;
+	    getActionBar().setTitle(mTitle);
+	}
+
 }

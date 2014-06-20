@@ -22,7 +22,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.database.DatabaseErrorHandler;
@@ -30,13 +29,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
-import android.view.Display;
 
 public class Trip extends Context implements Serializable {
 	private String id;
@@ -276,19 +272,7 @@ public class Trip extends Context implements Serializable {
 	}
 
 	@Override
-	public File[] getExternalFilesDirs(String type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public File getObbDir() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public File[] getObbDirs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -301,12 +285,6 @@ public class Trip extends Context implements Serializable {
 
 	@Override
 	public File getExternalCacheDir() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public File[] getExternalCacheDirs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -356,49 +334,42 @@ public class Trip extends Context implements Serializable {
 	}
 
 	@Override
-	@Deprecated
 	public Drawable getWallpaper() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@Deprecated
 	public Drawable peekWallpaper() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@Deprecated
 	public int getWallpaperDesiredMinimumWidth() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	@Deprecated
 	public int getWallpaperDesiredMinimumHeight() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	@Deprecated
 	public void setWallpaper(Bitmap bitmap) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	@Deprecated
 	public void setWallpaper(InputStream data) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	@Deprecated
 	public void clearWallpaper() throws IOException {
 		// TODO Auto-generated method stub
 		
@@ -411,19 +382,7 @@ public class Trip extends Context implements Serializable {
 	}
 
 	@Override
-	public void startActivity(Intent intent, Bundle options) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void startActivities(Intent[] intents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void startActivities(Intent[] intents, Bundle options) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -431,14 +390,6 @@ public class Trip extends Context implements Serializable {
 	@Override
 	public void startIntentSender(IntentSender intent, Intent fillInIntent,
 			int flagsMask, int flagsValues, int extraFlags)
-			throws SendIntentException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void startIntentSender(IntentSender intent, Intent fillInIntent,
-			int flagsMask, int flagsValues, int extraFlags, Bundle options)
 			throws SendIntentException {
 		// TODO Auto-generated method stub
 		
@@ -471,28 +422,6 @@ public class Trip extends Context implements Serializable {
 	}
 
 	@Override
-	public void sendBroadcastAsUser(Intent intent, UserHandle user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendBroadcastAsUser(Intent intent, UserHandle user,
-			String receiverPermission) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendOrderedBroadcastAsUser(Intent intent, UserHandle user,
-			String receiverPermission, BroadcastReceiver resultReceiver,
-			Handler scheduler, int initialCode, String initialData,
-			Bundle initialExtras) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void sendStickyBroadcast(Intent intent) {
 		// TODO Auto-generated method stub
 		
@@ -508,27 +437,6 @@ public class Trip extends Context implements Serializable {
 
 	@Override
 	public void removeStickyBroadcast(Intent intent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendStickyBroadcastAsUser(Intent intent, UserHandle user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendStickyOrderedBroadcastAsUser(Intent intent,
-			UserHandle user, BroadcastReceiver resultReceiver,
-			Handler scheduler, int initialCode, String initialData,
-			Bundle initialExtras) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeStickyBroadcastAsUser(Intent intent, UserHandle user) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -701,16 +609,23 @@ public class Trip extends Context implements Serializable {
 	}
 
 	@Override
-	public Context createConfigurationContext(
-			Configuration overrideConfiguration) {
+	public void startActivity(Intent intent, Bundle options) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
-	public Context createDisplayContext(Display display) {
+	public void startActivities(Intent[] intents, Bundle options) {
 		// TODO Auto-generated method stub
-		return null;
+		
+	}
+
+	@Override
+	public void startIntentSender(IntentSender intent, Intent fillInIntent,
+			int flagsMask, int flagsValues, int extraFlags, Bundle options)
+			throws SendIntentException {
+		// TODO Auto-generated method stub
+		
 	}
 }
 /*
