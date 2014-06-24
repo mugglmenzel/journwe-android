@@ -51,5 +51,6 @@
     <string name="title_activity_create_adventurer">CreateAdventurer</string>
     <string name="title_activity_create_date">CreateDate</string>
     <string name="add">Add Date</string>
+    <string name="google_maps_key">AIzaSyCuMcV-IagEP8k3o8K3q7LcgWjT-AKofqE</string>
 
 </resources>

@@ -8,6 +8,20 @@
     android:orientation="vertical"
     tools:context="com.journwe.android.CreateJournWe$PlaceholderFragment" >
 
+    <!-- <ScrollView -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" > -->
+
+
+    <!-- <LinearLayout -->
+    <!-- > -->
+
+
+    <!-- </LinearLayout> -->
+
+
+    <!-- </ScrollView> -->
+
     <LinearLayout
         android:id="@+id/l1"
         android:layout_width="fill_parent"
@@ -51,32 +65,38 @@
                 android:onClick="buttonClick" />
         </LinearLayout>
     </LinearLayout>
-    
-    <ListView
-        android:id="@+id/placelist"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="#99ffffff" >
-        
-    </ListView>
+
+    <!-- <ListView -->
+    <!-- android:id="@+id/placelist" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="0dp" -->
+    <!-- android:layout_weight="1" -->
+    <!-- android:padding="10dp" -->
+    <!-- android:layout_marginLeft="10dp" -->
+    <!-- android:layout_marginRight="10dp" -->
+    <!-- android:layout_marginBottom="10dp" -->
+    <!-- android:background="#99ffffff" > -->
+    <!-- </ListView> -->
+
 
     <!-- <com.google.android.maps.MapView -->
     <!-- xmlns:android="http://schemas.android.com/apk/res/android" -->
     <!-- android:id="@+id/mapview" -->
     <!-- android:layout_width="fill_parent" -->
-    <!-- android:layout_height="200dp" -->
-    <!-- android:apiKey="AIzaSyCuMcV-IagEP8k3o8K3q7LcgWjT-AKofqE" -->
+    <!-- android:layout_height="0dp" -->
+    <!-- android:apiKey="@string/google_maps_key" -->
     <!-- android:clickable="true" -->
-    <!-- android:layout_below="@+id/l1" /> -->
+    <!-- android:layout_weight="1" /> -->
+
+    <fragment
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.MapFragment" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="@dimen/create_journwe_bottom_bar"
         android:background="@drawable/border" >
 
         <Button

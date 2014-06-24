@@ -61,7 +61,7 @@
     
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="@dimen/create_journwe_bottom_bar"
         android:background="@drawable/border" >
 
         <Button

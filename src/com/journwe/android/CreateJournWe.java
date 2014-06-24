@@ -1,12 +1,10 @@
 package com.journwe.android;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -30,9 +28,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.maps.MapActivity;
 
-public class CreateJournWe extends Activity implements ActionBar.TabListener {
+public class CreateJournWe extends MapActivity implements ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -60,7 +64,7 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 	private String dialog;
 	private static DateAdapter dateAdapter;
 	private static AdventurerAdapter adventurerAdapter;
-	private static PlaceAdapter placeAdapter;
+	// private static PlaceAdapter placeAdapter;
 	private static DetailedTrip trip;
 	private static EditText adventurerText;
 
@@ -69,6 +73,24 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_journ_we);
 
+		MapsInitializer.initialize(this);
+
+		switch (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this)) {
+		case ConnectionResult.SUCCESS:
+			Log.i("SUCCESS", "SUCCESS");
+			break;
+		case ConnectionResult.SERVICE_MISSING:
+			Log.i("SERVICE MISSING", "SERVICE MISSING");
+			break;
+		case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+			Log.i("UPDATE REQUIRED", "UPDATE REQUIRED");
+			break;
+		default:
+			Toast.makeText(getApplicationContext(),
+					GooglePlayServicesUtil.isGooglePlayServicesAvailable(this),
+					Toast.LENGTH_SHORT).show();
+		}
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -102,18 +124,24 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-		
+
 		format = new SimpleDateFormat();
-		
+
 		if (trip == null) {
-			trip = new DetailedTrip("id", "name", "link", 0, Status.GOING, null, "", "", "", "");
+			trip = new DetailedTrip("id", "name", "link", 0, Status.GOING,
+					null, "", "", "", "");
 		}
-		
+
 		dateAdapter = new DateAdapter(this, R.id.datelist, trip.getDates());
+
+		adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerlist,
+				trip.getAdventurers());
+
+		// placeAdapter = new PlaceAdapter(this, R.id.placelist,
+		// trip.getPlaces());
 		
-		adventurerAdapter = new AdventurerAdapter(this, R.id.adventurerlist, trip.getAdventurers());
-		
-		placeAdapter = new PlaceAdapter(this, R.id.placelist, trip.getPlaces());
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapview))
+		        .getMap();
 	}
 
 	public void buttonClick(View v) {
@@ -143,19 +171,27 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 			break;
 		case R.id.addAdventurer:
 			Log.i("buttonClick", "addAdventurer");
-			if (adventurerText != null && !adventurerText.getText().equals(null) && adventurerText.getText().length() > 0) {
-				trip.addAdventurer(new JournWeAdventurer("", Status.UNDECIDED.toString(), adventurerText.getText().toString(), "", ""));
+			if (adventurerText != null
+					&& !adventurerText.getText().equals(null)
+					&& adventurerText.getText().length() > 0) {
+				trip.addAdventurer(new JournWeAdventurer("", Status.UNDECIDED
+						.toString(), adventurerText.getText().toString(), "",
+						""));
 				adventurerAdapter.notifyDataSetChanged();
 				adventurerText.setText("");
 			}
 			break;
 		case R.id.addPlace:
 			Log.i("buttonClick", "addPlace");
-//			if (adventurerText != null && !adventurerText.getText().equals(null) && adventurerText.getText().length() > 0) {
-//				trip.addAdventurer(new JournWeAdventurer("", Status.UNDECIDED.toString(), adventurerText.getText().toString(), "", ""));
-//				adventurerAdapter.notifyDataSetChanged();
-//				adventurerText.setText("");
-//			}
+			// if (adventurerText != null &&
+			// !adventurerText.getText().equals(null) &&
+			// adventurerText.getText().length() > 0) {
+			// trip.addAdventurer(new JournWeAdventurer("",
+			// Status.UNDECIDED.toString(), adventurerText.getText().toString(),
+			// "", ""));
+			// adventurerAdapter.notifyDataSetChanged();
+			// adventurerText.setText("");
+			// }
 			break;
 		}
 	}
@@ -171,21 +207,28 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		ok.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DatePicker datePicker = ((DatePicker) d.findViewById(R.id.datePicker));
-				TimePicker timePicker = ((TimePicker) d.findViewById(R.id.timePicker));
-				
+				DatePicker datePicker = ((DatePicker) d
+						.findViewById(R.id.datePicker));
+				TimePicker timePicker = ((TimePicker) d
+						.findViewById(R.id.timePicker));
+
 				if (dialog.equals("Start")) {
-					startDate = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
-					
+					startDate = new Date(datePicker.getYear() - 1900,
+							datePicker.getMonth(), datePicker.getDayOfMonth(),
+							timePicker.getCurrentHour(), timePicker
+									.getCurrentMinute());
+
 					startButton.setText(format.format(startDate));
 				}
-				
+
 				else if (dialog.equals("End")) {
-					endDate = new Date(datePicker.getYear() - 1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
-					
+					endDate = new Date(datePicker.getYear() - 1900, datePicker
+							.getMonth(), datePicker.getDayOfMonth(), timePicker
+							.getCurrentHour(), timePicker.getCurrentMinute());
+
 					endButton.setText(format.format(endDate));
 				}
-				
+
 				d.dismiss();
 			}
 		});
@@ -197,14 +240,15 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 		if (startButton != null) {
 			startDate = null;
 		}
-		
+
 		if (endButton != null) {
 			endDate = null;
 		}
-		
+
 		trip = null;
-		
-		Toast.makeText(getApplicationContext(), "JournWe wird erstellt", Toast.LENGTH_SHORT).show();
+
+		Toast.makeText(getApplicationContext(), "JournWe wird erstellt",
+				Toast.LENGTH_SHORT).show();
 
 		finish();
 	}
@@ -333,12 +377,13 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 						R.layout.fragment_create_journ_we_place, container,
 						false);
 				textView = (TextView) rootView.findViewById(R.id.section_label);
-				
-				ListView lv = (ListView) rootView.findViewById(R.id.placelist);
-				lv.setAdapter(placeAdapter);
 
-				// map = (((MapFragment) getFragmentManager().findFragmentById(
-				// R.id.mapview)).getMap());
+				// ListView lv = (ListView)
+				// rootView.findViewById(R.id.placelist);
+				// lv.setAdapter(placeAdapter);
+
+//				map = (((MapFragment) getFragmentManager().findFragmentById(
+//						R.id.mapview)).getMap());
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -346,12 +391,14 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 						R.layout.fragment_create_journ_we_adventurer,
 						container, false);
 				textView = (TextView) rootView.findViewById(R.id.section_label);
-				
-				ListView lv = (ListView) rootView.findViewById(R.id.adventurerlist);
+
+				ListView lv = (ListView) rootView
+						.findViewById(R.id.adventurerlist);
 				lv.setAdapter(adventurerAdapter);
-				
+
 				if (adventurerText == null) {
-					adventurerText = (EditText) rootView.findViewById(R.id.adventurertext);
+					adventurerText = (EditText) rootView
+							.findViewById(R.id.adventurertext);
 				}
 			}
 
@@ -360,24 +407,30 @@ public class CreateJournWe extends Activity implements ActionBar.TabListener {
 						R.layout.fragment_create_journ_we_date, container,
 						false);
 				textView = (TextView) rootView.findViewById(R.id.section_label);
-				
+
 				startButton = (Button) rootView.findViewById(R.id.startButton);
-				
+
 				if (startDate != null) {
 					startButton.setText(format.format(startDate));
 				}
-				
+
 				endButton = (Button) rootView.findViewById(R.id.endButton);
-				
+
 				if (endDate != null) {
 					endButton.setText(format.format(endDate));
 				}
-				
+
 				ListView lv = (ListView) rootView.findViewById(R.id.datelist);
 				lv.setAdapter(dateAdapter);
 			}
 
 			return rootView;
 		}
+	}
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
