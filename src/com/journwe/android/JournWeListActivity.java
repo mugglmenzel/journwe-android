@@ -44,14 +44,12 @@ public class JournWeListActivity extends ActionBarActivity {
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
 	 */
-//	private NavigationDrawerFragment mNavigationDrawerFragment;
-	private String[] mPlanetTitles;
+
+	private String[] mDrawerLabels;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private CharSequence mDrawerTitle;
     private ActionBarDrawerToggle mDrawerToggle;
-
-
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -81,7 +79,7 @@ public class JournWeListActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_journ_we);
 
         mTitle = mDrawerTitle = getTitle();
-		mPlanetTitles = new String[] {"My JournWes", "ID", "Name"};
+		mDrawerLabels = new String[] {"My JournWes", "ID", "Name"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
        
@@ -110,7 +108,7 @@ public class JournWeListActivity extends ActionBarActivity {
         
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+                R.layout.drawer_list_item, mDrawerLabels));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
        
@@ -217,38 +215,11 @@ public class JournWeListActivity extends ActionBarActivity {
 			Log.i("exception", e.getMessage());
 		}
 
-//		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-//				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
-
-		// Set up the drawer.
-//		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-//				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateJournWe.class);
-		
-		
 	}
-	
-	
-	
-	
-	
-	
-
-	
-
-    
-
-    
-
-    
-
-	
-	
-	
-    
 	
 	/* Called whenever we call invalidateOptionsMenu() */
     @Override
@@ -281,10 +252,9 @@ public class JournWeListActivity extends ActionBarActivity {
         // Handle action buttons
         switch(item.getItemId()) {
         case R.id.action_settings:
-            // create intent to perform web search for this planet
 //            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 //            intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-            // catch event that there's no activity to handle intent
+//        	
 //            if (intent.resolveActivity(getPackageManager()) != null) {
 //                startActivity(intent);
 //            } else {
@@ -295,15 +265,6 @@ public class JournWeListActivity extends ActionBarActivity {
             return super.onOptionsItemSelected(item);
         }
     }
-
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		// Handle action bar item clicks here. The action bar will
-//		// automatically handle clicks on the Home/Up button, so long
-//		// as you specify a parent activity in AndroidManifest.xml.
-//		return super.onOptionsItemSelected(item);
-//	}
-
 
 	public void setTrips(ArrayList<Trip> result) {
 		myTrips = result;
@@ -331,14 +292,6 @@ public class JournWeListActivity extends ActionBarActivity {
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-//			// Only show items in the action bar relevant to this screen
-//			// if the drawer is not showing. Otherwise, let the drawer
-//			// decide what to show in the action bar.
-//			getMenuInflater().inflate(R.menu.journ_we, menu);
-//			restoreActionBar();
-//			return true;
-//		}
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
@@ -351,70 +304,6 @@ public class JournWeListActivity extends ActionBarActivity {
 	private void call() {
 		new TripLoader().execute(this);
 	}
-	
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//			Bundle savedInstanceState) {
-//		View rootView = inflater.inflate(R.layout.fragment_journ_we,
-//				container, false);
-//
-//		if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-//			Log.i("start", "call");
-//
-//			progress = (LinearLayout) rootView
-//					.findViewById(R.id.linlaHeaderProgress);
-//
-//			if (progress == null) {
-//				Log.i("progressbar", "null");
-//			}
-//
-//			else {
-//				Log.i("progressbar", progress.toString());
-//			}
-//
-//			if (myTrips == null) {
-//				// call();
-//			}
-//
-//			lv = (ListView) rootView.findViewById(R.id.listview);
-//
-//			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//				@Override
-//				public void onItemClick(AdapterView<?> parent,
-//						final View view, int position, long id) {
-//
-//					if (position == 0) {
-//						startActivity(intentAdd);
-//					}
-//
-//					else {
-//						Trip item = (Trip) parent
-//								.getItemAtPosition(position - 1);
-//						Log.i("click", item.toString());
-//
-//						item.setImage(null);
-//
-//						intentDetail.putExtra(SEND_TRIP, item);
-//						startActivity(intentDetail);
-//					}
-//
-//				}
-//
-//			});
-//
-//		}
-//
-//		else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-//
-//		}
-//
-//		else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-//
-//		}
-//
-//		return rootView;
-//	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -515,7 +404,6 @@ public class JournWeListActivity extends ActionBarActivity {
 
 	/** Swaps fragments in the main content view */
 	private void selectItem(int position) {
-	    // Create a new fragment and specify the planet to show based on position
 	    Fragment fragment = new PlaceholderFragment();
 
 	    // Insert the fragment by replacing any existing fragment
@@ -526,8 +414,10 @@ public class JournWeListActivity extends ActionBarActivity {
 
 	    // Highlight the selected item, update the title, and close the drawer
 	    mDrawerList.setItemChecked(position, true);
-	    setTitle(mPlanetTitles[position]);
+	    setTitle(mDrawerLabels[position]);
 	    mDrawerLayout.closeDrawer(mDrawerList);
+	    
+	    call();
 	}
 
 	@Override
