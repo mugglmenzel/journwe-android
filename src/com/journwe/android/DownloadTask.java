@@ -43,26 +43,7 @@ public DownloadTask(View content, View spinner, int duration) {
         // Set the image view before the content is shown.
         mImage.setImageBitmap(result);
 
-        // Set the "show" view to 0% opacity but visible, so that it is visible
-        mContent.setAlpha(0f);
         mContent.setVisibility(View.VISIBLE);
-
-        // Animate the "show" view to 100% opacity, and clear any animation listener set on the view.
-        mContent.animate()
-                .alpha(1f)
-                .setDuration(mDuration)
-                .setListener(null);
-
-        // Animate the "hide" view to 0% opacity.
-        mSpinner.animate()
-                .alpha(0f)
-                .setDuration(mDuration)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mSpinner.setVisibility(View.GONE);
-                    }
-                });
     }
 
     /**

@@ -22,12 +22,14 @@ import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,22 +83,24 @@ public class JournWeListActivity extends ActionBarActivity {
         mTitle = mDrawerTitle = getTitle();
 		mPlanetTitles = new String[] {"My JournWes", "ID", "Name"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+       
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle(mDrawerTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
@@ -106,13 +110,16 @@ public class JournWeListActivity extends ActionBarActivity {
         
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.textview, mPlanetTitles));
+                R.layout.drawer_list_item, mPlanetTitles));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
        
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
+        if (savedInstanceState == null) {
+            selectItem(0);
+        }
 		
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
@@ -220,7 +227,28 @@ public class JournWeListActivity extends ActionBarActivity {
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateJournWe.class);
+		
+		
 	}
+	
+	
+	
+	
+	
+	
+
+	
+
+    
+
+    
+
+    
+
+	
+	
+	
+    
 	
 	/* Called whenever we call invalidateOptionsMenu() */
     @Override
@@ -245,19 +273,27 @@ public class JournWeListActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
+         // The action bar home/up action should open or close the drawer.
+         // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-          return true;
+            return true;
         }
-        // Handle your other action bar items...
-
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		
-        return super.onOptionsItemSelected(item);
+        // Handle action buttons
+        switch(item.getItemId()) {
+        case R.id.action_settings:
+            // create intent to perform web search for this planet
+//            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+//            intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
+            // catch event that there's no activity to handle intent
+//            if (intent.resolveActivity(getPackageManager()) != null) {
+//                startActivity(intent);
+//            } else {
+//                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+//            }
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
 //	@Override
@@ -286,30 +322,6 @@ public class JournWeListActivity extends ActionBarActivity {
 		}
 	}
 
-//	@Override
-//	public void onNavigationDrawerItemSelected(int position) {
-		// update the main content by replacing fragments
-//		android.app.FragmentManager fragmentManager = getFragmentManager();
-//		fragmentManager
-//				.beginTransaction()
-//				.replace(R.id.container,
-//						PlaceholderFragment.newInstance(position + 1)).commit();
-//	}
-
-	public void onSectionAttached(int number) {
-		switch (number) {
-		case 1:
-			mTitle = getString(R.string.title_section1);
-			break;
-		case 2:
-			mTitle = getString(R.string.title_section2);
-			break;
-		case 3:
-			mTitle = getString(R.string.title_section3);
-			break;
-		}
-	}
-
 	public void restoreActionBar() {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -318,7 +330,7 @@ public class JournWeListActivity extends ActionBarActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
 //		if (!mNavigationDrawerFragment.isDrawerOpen()) {
 //			// Only show items in the action bar relevant to this screen
 //			// if the drawer is not showing. Otherwise, let the drawer
@@ -327,8 +339,10 @@ public class JournWeListActivity extends ActionBarActivity {
 //			restoreActionBar();
 //			return true;
 //		}
-		return super.onCreateOptionsMenu(menu);
-	}
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
 	public String getUrl() {
 		return URL_CALL;
@@ -489,25 +503,20 @@ public class JournWeListActivity extends ActionBarActivity {
 
 			return rootView;
 		}
-
-		@Override
-		public void onAttach(Activity activity) {
-			super.onAttach(activity);
-			((JournWeListActivity) activity).onSectionAttached(getArguments()
-					.getInt(ARG_SECTION_NUMBER));
-		}
 	}
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	    @Override
-	    public void onItemClick(AdapterView parent, View view, int position, long id) {
-	        selectItem(position);
-	    }
-	}
+	
+	/* The click listner for ListView in the navigation drawer */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
 
 	/** Swaps fragments in the main content view */
 	private void selectItem(int position) {
 	    // Create a new fragment and specify the planet to show based on position
-	    Fragment fragment = new Fragment();
+	    Fragment fragment = new PlaceholderFragment();
 
 	    // Insert the fragment by replacing any existing fragment
 	    FragmentManager fragmentManager = getSupportFragmentManager();
@@ -524,7 +533,7 @@ public class JournWeListActivity extends ActionBarActivity {
 	@Override
 	public void setTitle(CharSequence title) {
 	    mTitle = title;
-	    getActionBar().setTitle(mTitle);
+	    getSupportActionBar().setTitle(mTitle);
 	}
 
 }
