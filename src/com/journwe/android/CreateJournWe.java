@@ -140,8 +140,8 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 		// placeAdapter = new PlaceAdapter(this, R.id.placelist,
 		// trip.getPlaces());
 		
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapview))
-		        .getMap();
+//		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapview))
+//		        .getMap();
 	}
 
 	public void buttonClick(View v) {

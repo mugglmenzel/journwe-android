@@ -45,6 +45,13 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.activity_main);
+
+		if (savedInstanceState == null) {
+			getFragmentManager().beginTransaction()
+					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+
 		uiHelper = new UiLifecycleHelper(MainActivity.this, callback);
 		uiHelper.onCreate(savedInstanceState);
 
@@ -61,13 +68,6 @@ public class MainActivity extends FragmentActivity {
 
 		if (session != null && !session.isClosed()) {
 			login();
-		}
-
-		setContentView(R.layout.activity_main);
-
-		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
 
@@ -165,7 +165,12 @@ public class MainActivity extends FragmentActivity {
 
 	public void login() {
 		if (authButton != null) {
+			Log.i("login button", "gone");
 			authButton.setVisibility(View.GONE);
+		}
+		
+		else {
+			Log.i("login button", "not");
 		}
 		
 		final Intent intent = new Intent(this, JournWeListActivity.class);
@@ -178,6 +183,9 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void call(Session session, SessionState state,
 					Exception exception) {
+				if (authButton != null) {
+					authButton.setVisibility(View.GONE);
+				}
 
 				fbsession = session;
 
