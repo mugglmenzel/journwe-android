@@ -185,7 +185,7 @@ public class JournWeListActivity extends Activity implements
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		intentDetail = new Intent(this, JournWeDetail.class);
-		intentAdd = new Intent(this, CreateJournWe.class);
+		intentAdd = new Intent(this, CreateActivity.class);
 	}
 
 	public void setTrips(ArrayList<Trip> result) {

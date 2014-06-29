@@ -1,5 +1,7 @@
 package com.journwe.android;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -10,6 +12,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -29,10 +35,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.maps.MapActivity;
 
@@ -67,6 +71,8 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 	// private static PlaceAdapter placeAdapter;
 	private static DetailedTrip trip;
 	private static EditText adventurerText;
+	private String name;
+	private Bitmap image;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +96,33 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 					GooglePlayServicesUtil.isGooglePlayServicesAvailable(this),
 					Toast.LENGTH_SHORT).show();
 		}
-		
+
+		Intent intent = getIntent();
+
+		name = intent.getExtras().getString(CreateActivity.NAME);
+		Uri uri = intent.getParcelableExtra(CreateActivity.IMAGE);
+
+		InputStream imageStream;
+
+		if (uri == null) {
+			Log.i("uri", "null");
+		}
+
+		else {
+			try {
+				imageStream = getContentResolver().openInputStream(uri);
+				image = BitmapFactory.decodeStream(imageStream);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		Toast.makeText(this, "create " + name, Toast.LENGTH_SHORT).show();
+
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
+		actionBar.setTitle(name);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
@@ -128,8 +158,8 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 		format = new SimpleDateFormat();
 
 		if (trip == null) {
-			trip = new DetailedTrip("id", "name", "link", 0, Status.GOING,
-					null, "", "", "", "");
+			trip = new DetailedTrip("id", name, "link", 0, Status.GOING, null,
+					"", "", "", "");
 		}
 
 		dateAdapter = new DateAdapter(this, R.id.datelist, trip.getDates());
@@ -139,9 +169,10 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 
 		// placeAdapter = new PlaceAdapter(this, R.id.placelist,
 		// trip.getPlaces());
-		
-//		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapview))
-//		        .getMap();
+
+		// map = ((MapFragment)
+		// getFragmentManager().findFragmentById(R.id.mapview))
+		// .getMap();
 	}
 
 	public void buttonClick(View v) {
@@ -382,8 +413,8 @@ public class CreateJournWe extends MapActivity implements ActionBar.TabListener 
 				// rootView.findViewById(R.id.placelist);
 				// lv.setAdapter(placeAdapter);
 
-//				map = (((MapFragment) getFragmentManager().findFragmentById(
-//						R.id.mapview)).getMap());
+				// map = (((MapFragment) getFragmentManager().findFragmentById(
+				// R.id.mapview)).getMap());
 			}
 
 			else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {

@@ -94,6 +94,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.journwe.android.JournWeListActivity" />
         </activity>
+        <activity
+            android:name="com.journwe.android.CreateActivity"
+            android:label="@string/title_activity_create"
+            android:parentActivityName="com.journwe.android.JournWeListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.journwe.android.JournWeListActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -157,6 +157,20 @@ public class TripLoader extends
 
 	private Bitmap download_Image(String url) {
 		Bitmap re = null;
+		
+		String thumbnail = URL_BASE + "/thumbnail?w=20&h=20";
+		
+		Log.i("thumbnail", thumbnail);
+		
+		try {
+			HttpURLConnection con = (HttpURLConnection) new URL(thumbnail)
+					.openConnection();
+			con.connect();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 			URL urln = new URL(url);
 			re = BitmapFactory.decodeStream(urln.openConnection()
