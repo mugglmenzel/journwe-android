@@ -19,8 +19,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 
 public class TripLoader extends
 		AsyncTask<JournWeListActivity, Void, ArrayList<Trip>> {
@@ -29,10 +27,13 @@ public class TripLoader extends
 	private final String URL_BASE = "http://www.journwe.com";
 	private JournWeListActivity a;
 	private ProgressDialog progress;
+	private int width;
 
 	@Override
 	protected ArrayList<Trip> doInBackground(JournWeListActivity... activity) {
 		this.a = activity[0];
+		
+		width = JournWeListActivity.width/10;
 		
 		HttpURLConnection connection;
 		InputStream input;
@@ -158,21 +159,12 @@ public class TripLoader extends
 	private Bitmap download_Image(String url) {
 		Bitmap re = null;
 		
-		String thumbnail = URL_BASE + "/thumbnail?w=20&h=20";
+		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&u=" + url;
 		
 		Log.i("thumbnail", thumbnail);
 		
 		try {
-			HttpURLConnection con = (HttpURLConnection) new URL(thumbnail)
-					.openConnection();
-			con.connect();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
-			URL urln = new URL(url);
+			URL urln = new URL(thumbnail);
 			re = BitmapFactory.decodeStream(urln.openConnection()
 					.getInputStream());
 		} catch (IOException e) {

@@ -26,9 +26,20 @@ public class DetailedTrip extends Trip {
 		super(t.getId(), t.getName(), t.getLink(), t.getPeople(), t.getStatus(), null/*TODO*/, t.getImageTimeStamp(), t.getFavPlace(), t.getFavTime(), t.getImageURL());
 		
 		this.trip = t;
-		dates = new ArrayList();
-		places = new ArrayList();
-		adventurers = new ArrayList();
+		dates = new ArrayList<JournWeDate>();
+		places = new ArrayList<JournWePlace>();
+		adventurers = new ArrayList<JournWeAdventurer>();
+	}
+	
+	public void reset() {
+		trip.reset();
+		description = "";
+		dates = new ArrayList<JournWeDate>();
+		places = new ArrayList<JournWePlace>();
+		adventurers = new ArrayList<JournWeAdventurer>();
+		favPlace = null;
+		favDate = null;
+		googleMap = null;
 	}
 	
 	public void setGoogleMap(Bitmap googleMap) {

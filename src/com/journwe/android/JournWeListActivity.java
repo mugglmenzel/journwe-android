@@ -1,24 +1,21 @@
 package com.journwe.android;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.facebook.Session;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -26,18 +23,18 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,6 +54,8 @@ public class JournWeListActivity extends Activity implements
 	 */
 
 	public final static String SEND_TRIP = "com.journwe.android.trip";
+	public static int width;
+	public static int height;
 
 	private CharSequence mTitle;
 	private static final String URL_LOGIN = "http://www.journwe.com/api/json/mobile/authenticate/facebook";
@@ -161,6 +160,12 @@ public class JournWeListActivity extends Activity implements
 			Log.i("cookie", cookieManager.getCookieStore().getCookies().size()
 					+ "");
 			
+			DisplayMetrics displayMetrics = new DisplayMetrics();
+			WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+			wm.getDefaultDisplay().getMetrics(displayMetrics);
+			width = displayMetrics.widthPixels;
+			height = displayMetrics.heightPixels;
+			
 //			new TripLoader().execute(this);
 			
 			call();
@@ -186,12 +191,24 @@ public class JournWeListActivity extends Activity implements
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateActivity.class);
+		
+		try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	public void setTrips(ArrayList<Trip> result) {
 		myTrips = result;
 		
 		if (lv != null) {
+			lv.setVisibility(View.VISIBLE);
 			lv.setAdapter(adapter);
 		}
 		adapter.clear();
@@ -252,11 +269,44 @@ public class JournWeListActivity extends Activity implements
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		
+		switch (item.getItemId()) {
+		case R.id.action_settings:
 			return true;
+		case R.id.action_logout:
+			
+			Session session = Session.getActiveSession();
+		    if (session != null) {
+
+		        if (!session.isClosed()) {
+		            session.closeAndClearTokenInformation();
+		            //clear your preferences if saved
+		        }
+		    } else {
+
+		        session = new Session(this);
+		        Session.setActiveSession(session);
+
+		        session.closeAndClearTokenInformation();
+		            //clear your preferences if saved
+
+		    }
+			
+			Intent i = new Intent(this, MainActivity.class);
+			startActivity(i);
+			
+			finish();
+			
+			return true;
+		case R.id.action_refresh:
+			myTrips = new ArrayList<Trip>();
+			adapter.clear();
+			lv.setVisibility(View.GONE);
+			progress.setVisibility(View.VISIBLE);
+			call();
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 	
 	public String getUrl() {

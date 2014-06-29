@@ -20,7 +20,6 @@ import android.widget.TextView;
 public class DetailAdapter extends ArrayAdapter<Trip> {
 
 	private Context context;
-	private ArrayList<Trip> values;
 	private DetailedTrip trip;
 	private JournWeDetail detail;
 	private View view;
@@ -29,9 +28,17 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 	public DetailAdapter(Context context, int ViewResourceId, List<Trip> objects) {
 		super(context, ViewResourceId, objects);
 		this.context = context;
-		this.values = (ArrayList) objects;
-		this.trip = new DetailedTrip(values.get(0));
+		this.trip = new DetailedTrip(objects.get(0));
 		detail = (JournWeDetail) context;
+	}
+	
+	public void reload() {
+//		trip.reset();
+		
+		clear();
+		notifyDataSetChanged();
+		
+		new DetailLoader(this).execute(this);
 	}
 	
 	public Context getContext() {

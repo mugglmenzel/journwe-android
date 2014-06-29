@@ -1,15 +1,8 @@
 package com.journwe.android;
 
-import java.util.Arrays;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager.OnActivityResultListener;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -31,6 +25,7 @@ public class MainActivity extends FragmentActivity {
 	public final static String USER = "com.journwe.android.user";
 	public final static String PROVIDER = "com.journwe.android.provider";
 	private Session fbsession;
+	private static ProgressBar progress;
 	private static LoginButton authButton;
 	private UiLifecycleHelper uiHelper;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -116,6 +111,9 @@ public class MainActivity extends FragmentActivity {
 			Log.i("TAG", "Logged in...");
 		} else if (state.isClosed()) {
 			Log.i("TAG", "Logged out...");
+			if (progress != null) {
+				progress.setVisibility(View.GONE);
+			}
 		}
 	}
 
@@ -159,20 +157,13 @@ public class MainActivity extends FragmentActivity {
 			authButton.setVisibility(1);
 			Log.i("!", "!");
 
+			progress = (ProgressBar) rootView.findViewById(R.id.loading_spinner);
+			
 			return rootView;
 		}
 	}
 
 	public void login() {
-		if (authButton != null) {
-			Log.i("login button", "gone");
-			authButton.setVisibility(View.GONE);
-		}
-		
-		else {
-			Log.i("login button", "not");
-		}
-		
 		final Intent intent = new Intent(this, JournWeListActivity.class);
 
 		Log.i("login", "start");

@@ -14,11 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:visibility="gone" />
+        android:gravity="center_horizontal" />
     
     <LinearLayout
-        android:id="@+id/linlaHeaderProgress"
+        android:id="@+id/progress"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"

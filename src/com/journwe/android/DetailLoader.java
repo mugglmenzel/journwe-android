@@ -24,9 +24,11 @@ import android.widget.TextView;
 
 public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 
+	private final String URL_BASE = "http://www.journwe.com";
 	private View mView;
 	private DetailAdapter detail;
 	private ProgressDialog progress;
+	private int width;
 
 	public DetailLoader(DetailAdapter content) {
 		detail = content;
@@ -35,6 +37,8 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 		progress.setMessage("Wait while loading...");
 		progress.setCanceledOnTouchOutside(false);
 		progress.show();
+		
+		width = JournWeListActivity.width;
 	}
 
 	@Override
@@ -97,32 +101,7 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 		
 		detail.setDetail(result);
 
-		// To dismiss the dialog
 		progress.dismiss();
-		
-		// Set the image view before the content is shown.
-//		ImageView i = (ImageView) mView.findViewById(R.id.image);
-//		i.setImageBitmap(result.getBitmap());
-//
-//		TextView t = (TextView) mView.findViewById(R.id.text);
-//		t.setText(result.getString());
-//
-//		// Set the "show" view to 0% opacity but visible, so that it is visible
-//		detail.getView().setAlpha(0f);
-//		detail.getView().setVisibility(View.VISIBLE);
-//
-//		// Animate the "show" view to 100% opacity, and clear any animation
-//		// listener set on the view.
-//		detail.getView().animate().alpha(1f).setDuration(mDuration).setListener(null);
-//
-//		// Animate the "hide" view to 0% opacity.
-//		mSpinner.animate().alpha(0f).setDuration(mDuration)
-//				.setListener(new AnimatorListenerAdapter() {
-//					@Override
-//					public void onAnimationEnd(Animator animation) {
-//						mSpinner.setVisibility(View.GONE);
-//					}
-//				});
 	}
 
 	/**
@@ -132,10 +111,12 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 	 */
 	private Bitmap loadImageFromNetwork(String url) {
 		Bitmap bm = null;
+		
+		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&u=" + url;
+		
 		try {
-			URL urln = new URL(url);
-			Log.i("load", url);
-			Log.i("load", "loading Image...");
+			URL urln = new URL(thumbnail);
+			Log.i("load", thumbnail);
 			bm = BitmapFactory.decodeStream(urln.openConnection()
 					.getInputStream());
 			Log.i("load", "done");

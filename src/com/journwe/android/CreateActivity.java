@@ -1,7 +1,18 @@
 package com.journwe.android;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -30,6 +41,8 @@ public class CreateActivity extends Activity {
 	public final static String IMAGE = "com.journwe.android.image";
 	private static final int SELECT_PHOTO = 100;
 	private Uri imageUri;
+
+	private final String URL_BASE = "http://www.journwe.com";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +125,55 @@ public class CreateActivity extends Activity {
 	private void setDetail(String s) {
 		intent.putExtra(NAME, s);
 		intent.putExtra(IMAGE, imageUri);
-		startActivity(intent);
+		
+		
+		String get = "";
+		try {
+			get = "/adventure/" + URLEncoder.encode("new controllers.html.AdventureController.save()", "UTF-8");
+		} catch (UnsupportedEncodingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		String post = "/adventure/save controllers.html.AdventureController.save()";
+		
+		HttpURLConnection connection;
+		InputStream input;
+
+		String urlstring = "";
+		urlstring = URL_BASE + get;
+
+		URL url;
+		try {
+			url = new URL(urlstring);
+
+			Log.i("url", url.toString());
+
+			connection = (HttpURLConnection) url.openConnection();
+			connection.connect();
+
+			// download the file
+			input = connection.getInputStream();
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(input));
+			String read = "";
+			String in = "";
+
+			while ((read = br.readLine()) != null) {
+				in += read;
+			}
+			
+			Log.i("create input", in);
+
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+//		startActivity(intent);
 		finish();
 	}
 

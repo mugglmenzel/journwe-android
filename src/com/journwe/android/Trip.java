@@ -67,6 +67,15 @@ public class Trip extends Context implements Serializable {
 //			bl.execute(imageURL);
 //		}
 	}
+	
+	public void reset() {
+		image = null;
+		imageTimeStamp = null;
+		people = 0;
+		favPlace = null;
+		favTime = null;
+		status = null;
+	}
 
 	public String getImageURL() {
 		return imageURL;
