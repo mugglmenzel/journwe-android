@@ -173,7 +173,7 @@ public class CreateActivity extends Activity {
 		}
 		
 		
-//		startActivity(intent);
+		startActivity(intent);
 		finish();
 	}
 

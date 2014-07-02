@@ -74,9 +74,9 @@ public class JournWeListActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		Log.i("savedinstancestate", (savedInstanceState == null) +"");
-		
+
+		Log.i("savedinstancestate", (savedInstanceState == null) + "");
+
 		setContentView(R.layout.activity_journ_we);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -159,15 +159,16 @@ public class JournWeListActivity extends Activity implements
 
 			Log.i("cookie", cookieManager.getCookieStore().getCookies().size()
 					+ "");
-			
+
 			DisplayMetrics displayMetrics = new DisplayMetrics();
-			WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+			WindowManager wm = (WindowManager) getApplicationContext()
+					.getSystemService(Context.WINDOW_SERVICE);
 			wm.getDefaultDisplay().getMetrics(displayMetrics);
 			width = displayMetrics.widthPixels;
 			height = displayMetrics.heightPixels;
-			
-//			new TripLoader().execute(this);
-			
+
+			// new TripLoader().execute(this);
+
 			call();
 
 			adapter = new JournweArrayAdapter(this,
@@ -191,37 +192,42 @@ public class JournWeListActivity extends Activity implements
 
 		intentDetail = new Intent(this, JournWeDetail.class);
 		intentAdd = new Intent(this, CreateActivity.class);
-		
+
 		try {
-	        ViewConfiguration config = ViewConfiguration.get(this);
-	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-	        if(menuKeyField != null) {
-	            menuKeyField.setAccessible(true);
-	            menuKeyField.setBoolean(config, false);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
+			ViewConfiguration config = ViewConfiguration.get(this);
+			Field menuKeyField = ViewConfiguration.class
+					.getDeclaredField("sHasPermanentMenuKey");
+			if (menuKeyField != null) {
+				menuKeyField.setAccessible(true);
+				menuKeyField.setBoolean(config, false);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setTrips(ArrayList<Trip> result) {
 		myTrips = result;
-		
+
 		if (lv != null) {
 			lv.setVisibility(View.VISIBLE);
 			lv.setAdapter(adapter);
 		}
 		adapter.clear();
-        adapter.addAll(result);
-        adapter.notifyDataSetChanged();
-		
+		adapter.addAll(result);
+		adapter.notifyDataSetChanged();
+
 		Log.i("data changed", myTrips.size() + "");
-		
+
 		progress.setVisibility(View.GONE);
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
+		if (lv != null) {
+			call();
+		}
+
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager
@@ -269,34 +275,30 @@ public class JournWeListActivity extends Activity implements
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		
+
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			return true;
 		case R.id.action_logout:
-			
+
 			Session session = Session.getActiveSession();
-		    if (session != null) {
+			if (session != null) {
+				session.closeAndClearTokenInformation();
+			} else {
 
-		        if (!session.isClosed()) {
-		            session.closeAndClearTokenInformation();
-		            //clear your preferences if saved
-		        }
-		    } else {
+				session = new Session(this);
+				Session.setActiveSession(session);
 
-		        session = new Session(this);
-		        Session.setActiveSession(session);
+				session.closeAndClearTokenInformation();
+				// clear your preferences if saved
 
-		        session.closeAndClearTokenInformation();
-		            //clear your preferences if saved
+			}
 
-		    }
-			
 			Intent i = new Intent(this, MainActivity.class);
 			startActivity(i);
-			
+
 			finish();
-			
+
 			return true;
 		case R.id.action_refresh:
 			myTrips = new ArrayList<Trip>();
@@ -308,12 +310,16 @@ public class JournWeListActivity extends Activity implements
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	public String getUrl() {
 		return URL_CALL;
 	}
 
 	private void call() {
+		// myTrips = new ArrayList<Trip>();
+		// adapter.clear();
+		// lv.setVisibility(View.GONE);
+		// progress.setVisibility(View.VISIBLE);
 		new TripLoader().execute(this);
 	}
 
@@ -348,19 +354,20 @@ public class JournWeListActivity extends Activity implements
 					container, false);
 
 			Log.i("start", "call");
-			
-			progress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
-			
+
+			progress = (LinearLayout) rootView
+					.findViewById(R.id.linlaHeaderProgress);
+
 			if (progress == null) {
 				Log.i("progressbar", "null");
 			}
-			
+
 			else {
 				Log.i("progressbar", progress.toString());
 			}
 
 			if (myTrips == null) {
-//				call();
+				// call();
 			}
 
 			lv = (ListView) rootView.findViewById(R.id.listview);
@@ -370,21 +377,22 @@ public class JournWeListActivity extends Activity implements
 				@Override
 				public void onItemClick(AdapterView<?> parent, final View view,
 						int position, long id) {
-					
+
 					if (position == 0) {
 						startActivity(intentAdd);
 					}
-					
+
 					else {
-						Trip item = (Trip) parent.getItemAtPosition(position-1);
+						Trip item = (Trip) parent
+								.getItemAtPosition(position - 1);
 						Log.i("click", item.toString());
-						
+
 						item.setImage(null);
-						
+
 						intentDetail.putExtra(SEND_TRIP, item);
 						startActivity(intentDetail);
 					}
-					
+
 				}
 
 			});
