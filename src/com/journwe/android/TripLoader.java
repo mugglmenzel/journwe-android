@@ -159,7 +159,7 @@ public class TripLoader extends
 	private Bitmap download_Image(String url) {
 		Bitmap re = null;
 		
-		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&u=" + url;
+		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&h=" + width + "&u=" + url;
 		
 		Log.i("thumbnail", thumbnail);
 		

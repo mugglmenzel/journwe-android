@@ -26,10 +26,10 @@ import android.widget.TextView;
 public class PlaceLoader extends
 		AsyncTask<PlaceAdapter, Void, ArrayList<JournWePlace>> {
 
-	// reference to our imageview
 	private String id;
 	private PlaceAdapter content;
 	private int mDuration;
+	private Date deadline;
 
 	public PlaceLoader(PlaceAdapter content, String id, int duration) {
 		this.content = content;
@@ -71,10 +71,14 @@ public class PlaceLoader extends
 				JSONObject j = json.getJSONObject(i);
 				JournWePlace p = new JournWePlace("", 0, "", 0, 0);
 				try {
-					p = new JournWePlace(j.getString("address"), 5*Double.parseDouble(j.getString("voteGroup")), j.getString("favorite"), Double.parseDouble(j.getString("lat")), Double.parseDouble(j.getString("lng")));
+					p = new JournWePlace(j.getString("address"),
+							5 * Double.parseDouble(j.getString("voteGroup")),
+							j.getString("favorite"), Double.parseDouble(j
+									.getString("lat")), Double.parseDouble(j
+									.getString("lng")));
 
 				} catch (NumberFormatException e) {
-					Log.i("date exception", e.getStackTrace().toString());
+					Log.i("place exception", e.getStackTrace().toString());
 				}
 
 				re.add(p);
@@ -86,11 +90,35 @@ public class PlaceLoader extends
 			e.printStackTrace();
 		}
 
+//		try {
+//			String deadline = "http://www.journwe.com/api/json/adventure/" + id + "/places/vote/deadline.json";
+//
+//			HttpURLConnection connection = (HttpURLConnection) new URL(deadline)
+//					.openConnection();
+//			connection.connect();
+//
+//			// download the file
+//			InputStream input = connection.getInputStream();
+//
+//			BufferedReader br = new BufferedReader(new InputStreamReader(input));
+//			String read = "";
+//			String in = "";
+//
+//			while ((read = br.readLine()) != null) {
+//				in += read;
+//			}
+//
+//			Log.i("place vote deadline", in);
+//
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+
 		return re;
 	}
 
 	@Override
 	protected void onPostExecute(ArrayList<JournWePlace> result) {
-		content.setPlace(result);
+		content.setPlace(result, deadline);
 	}
 }

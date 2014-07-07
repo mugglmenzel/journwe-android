@@ -1,6 +1,7 @@
 package com.journwe.android;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -30,8 +31,8 @@ public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 		this.places = (ArrayList<JournWePlace>) objects;
 	}
 	
-	public void setPlace(ArrayList<JournWePlace> p) {
-		detail.setPlace(p);
+	public void setPlace(ArrayList<JournWePlace> p, Date deadline) {
+		detail.setPlace(p, deadline);
 	}
 
 	public int getCount() {

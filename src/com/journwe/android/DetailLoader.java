@@ -112,7 +112,7 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 	private Bitmap loadImageFromNetwork(String url) {
 		Bitmap bm = null;
 		
-		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&u=" + url;
+		String thumbnail = URL_BASE + "/thumbnail?w=" + width + "&w=" + width + "&u=" + url;
 		
 		try {
 			URL urln = new URL(thumbnail);

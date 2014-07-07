@@ -1,6 +1,7 @@
 package com.journwe.android;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.graphics.Bitmap;
 
@@ -13,6 +14,8 @@ public class DetailedTrip extends Trip {
 	private JournWePlace favPlace;
 	private JournWeDate favDate;
 	private Bitmap googleMap;
+	private Date placeDeadline;
+	private Date dateDeadline;
 
 	public DetailedTrip(String id, String name, String link, int people, Status status, Bitmap image, String imageTimeStamp, String favPlace, String favTime, String imageURL) {
 		super(id, name, link, people, status, image, imageTimeStamp, favPlace, favTime, imageURL);
@@ -40,6 +43,22 @@ public class DetailedTrip extends Trip {
 		favPlace = null;
 		favDate = null;
 		googleMap = null;
+	}
+
+	public Date getDateDeadline() {
+		return dateDeadline;
+	}
+
+	public void setDateDeadline(Date dateDeadline) {
+		this.dateDeadline = dateDeadline;
+	}
+
+	public Date getPlaceDeadline() {
+		return placeDeadline;
+	}
+	
+	public void setPlaceDeadline(Date placeDeadline) {
+		this.placeDeadline = placeDeadline;
 	}
 	
 	public void setGoogleMap(Bitmap googleMap) {

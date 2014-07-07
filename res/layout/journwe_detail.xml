@@ -26,7 +26,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:maxLines="10"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:ellipsize="end" />
     </LinearLayout>
 
 </LinearLayout>

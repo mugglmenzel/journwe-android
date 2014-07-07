@@ -2,24 +2,11 @@ package com.journwe.android;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -299,7 +286,7 @@ public class JournWeDetail extends Activity {
 		setDateSize();
 	}
 
-	public void setPlace(ArrayList<JournWePlace> places) {
+	public void setPlace(ArrayList<JournWePlace> places, Date deadline) {
 
 		for (JournWePlace p : places) {
 			trip.addPlace(p);
@@ -315,6 +302,8 @@ public class JournWeDetail extends Activity {
 				}
 			}
 		}
+		
+		trip.setPlaceDeadline(deadline);
 		
 		if (placeAdapter != null) {
 			placeAdapter.notifyDataSetChanged();
