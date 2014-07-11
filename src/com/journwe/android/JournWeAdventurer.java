@@ -1,6 +1,6 @@
 package com.journwe.android;
 
-public class JournWeAdventurer {
+public class JournWeAdventurer implements Comparable<JournWeAdventurer> {
 
 	private String id;
 	private Status status;
@@ -22,11 +22,11 @@ public class JournWeAdventurer {
 			this.status = Status.BOOKED;
 		}
 
-		else if (status.toLowerCase().equals("notgoing")) {
+		else if (status.toLowerCase().equals("notgoing") || status.toLowerCase().equals("not going")) {
 			this.status = Status.NOTGOING;
 		}
 
-		else if (status.toLowerCase().equals("undecided")) {
+		else {
 			this.status = Status.UNDECIDED;
 		}
 	}
@@ -69,5 +69,55 @@ public class JournWeAdventurer {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	@Override
+	public int compareTo(JournWeAdventurer another) {
+		switch (this.getStatus()) {
+		case BOOKED:
+			if (another.getStatus() == Status.BOOKED) {
+				return 0;
+			}
+			
+			else {
+				return -1;
+			}
+		case GOING:
+			if (another.getStatus() == status.BOOKED) {
+				return 1;
+			}
+			
+			else if (another.getStatus() == status.GOING) {
+				return 0;
+			}
+			
+			else {
+				return -1;
+			}
+		case UNDECIDED:
+			if (another.getStatus() == status.BOOKED || another.getStatus() == status.GOING) {
+				return 1;
+			}
+			
+			else if (another.getStatus() == status.UNDECIDED) {
+				return 0;
+			}
+			
+			else {
+				return -1;
+			}
+		case NOTGOING:
+			if (another.getStatus() == status.NOTGOING) {
+				return 0;
+			}
+			
+			else {
+				return 1;
+			}
+		default:
+			break;
+		}
+		
+		return 0;
 	}
 }

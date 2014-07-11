@@ -1,6 +1,7 @@
 package com.journwe.android;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -24,6 +25,9 @@ public class AdventurerAdapter extends ArrayAdapter<JournWeAdventurer> {
 		if (context instanceof JournWeDetail) {
 			this.detail = (JournWeDetail) context;
 		}
+		
+		Collections.sort(objects);
+		
 		this.adventurers = (ArrayList<JournWeAdventurer>) objects;
 	}
 	
@@ -37,6 +41,13 @@ public class AdventurerAdapter extends ArrayAdapter<JournWeAdventurer> {
 		}
 		
 		return adventurers.size();
+	}
+	
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		
+		Collections.sort(adventurers);
 	}
 
 	@Override

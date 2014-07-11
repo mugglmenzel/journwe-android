@@ -324,7 +324,19 @@ public class JournWeDetail extends Activity {
 		for (JournWeAdventurer a : adventurers) {
 			trip.addAdventurer(a);
 		}
-
+		
+		for (int i = 0; i < 3; i ++) {
+			trip.addAdventurer(new JournWeAdventurer("", "GOING", i + "", "", ""));
+		}
+		
+		for (int i = 0; i < 3; i ++) {
+			trip.addAdventurer(new JournWeAdventurer("", "BOOKED", i + "", "", ""));
+		}
+		
+		for (int i = 0; i < 3; i ++) {
+			trip.addAdventurer(new JournWeAdventurer("", "NOT GOING", i + "", "", ""));
+		}
+		
 		if (adventurerAdapter != null) {
 			adventurerAdapter.notifyDataSetChanged();
 		}
