@@ -34,6 +34,8 @@
     <string name="favTimeSelected">no favorite time selected</string>
     <string name="timeStartHint">Start Date</string>
     <string name="timeEndHint">End Date</string>
+    <string name="no_description">No description</string>
+    
     <string name="create">Create new JournWe</string>
     <string name="title_activity_create_journ_we">New JournWe</string>
     <string name="create_section1">Where?</string>
@@ -43,7 +45,7 @@
     <string name="time">Time</string>
     <string name="people">People</string>
     <string name="date">Date</string>
-    <string name="vote">Vote</string>
+    <string name="vote">0.0</string>
     <string name="adventurer">Adventurer</string>
     <string name="invite">Invite your Friends >></string>
     <string name="or">or</string>

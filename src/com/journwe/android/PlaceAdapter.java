@@ -18,7 +18,7 @@ public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 	private JournWeDetail detail;
 	private ArrayList<JournWePlace> places;
 	private Context context;
-	
+	private boolean loaded;
 
 	public PlaceAdapter(Context context, int ViewResourceId, List<JournWePlace> objects) {
 		super(context, ViewResourceId, objects);
@@ -29,6 +29,8 @@ public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 		}
 		
 		this.places = (ArrayList<JournWePlace>) objects;
+		
+		loaded = false;
 	}
 	
 	public void setPlace(ArrayList<JournWePlace> p, Date deadline) {
@@ -58,7 +60,8 @@ public class PlaceAdapter extends ArrayAdapter<JournWePlace> {
 			
 			place.setText("No places");
 			
-			if (detail != null) {
+			if (detail != null && loaded == false) {
+				loaded = true;
 				new PlaceLoader(this, detail.getTrip().getId(), 0).execute(this);
 			}
 		}

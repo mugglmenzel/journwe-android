@@ -23,6 +23,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 	private DetailedTrip trip;
 	private JournWeDetail detail;
 	private View view;
+	private boolean loaded;
 //	private View spinner;
 
 	public DetailAdapter(Context context, int ViewResourceId, List<Trip> objects) {
@@ -30,10 +31,13 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		this.context = context;
 		this.trip = new DetailedTrip(objects.get(0));
 		detail = (JournWeDetail) context;
+		loaded = false;
 	}
 	
 	public void reload() {
 //		trip.reset();
+		
+		loaded = true;
 		
 		clear();
 		notifyDataSetChanged();
@@ -63,8 +67,8 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		 trip.setDescription(d.getString());
 		TextView t = (TextView) view.findViewById(R.id.text);
 		
-		if (d.getString() == "null") {
-			t.setText("no description");
+		if (d.getString().equals("null") || d.getString() == null) {
+			t.setText(R.string.no_description);
 		}
 		
 		else {
@@ -107,8 +111,8 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 			t.setTag("http://www.journwe.com/api/json/adventure/"
 					+ trip.getId() + "/info.json");
 
-			if (trip.getImage() == null) {
-				new DetailLoader(this).execute(this);
+			if (loaded == false) {
+				reload();
 			}
 
 			else {
