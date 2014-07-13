@@ -67,7 +67,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		 trip.setDescription(d.getString());
 		TextView t = (TextView) view.findViewById(R.id.text);
 		
-		if (d.getString().equals("null") || d.getString() == null) {
+		if (d.getString().equals("null") || d.getString().equals(null)) {
 			t.setText(R.string.no_description);
 		}
 		
