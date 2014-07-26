@@ -17,6 +17,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.android.Facebook;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity {
 
 		uiHelper = new UiLifecycleHelper(MainActivity.this, callback);
 		uiHelper.onCreate(savedInstanceState);
-
+		
 		Session session = Session.getActiveSession();
 
 		if (session != null) {

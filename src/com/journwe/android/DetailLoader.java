@@ -7,13 +7,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -29,8 +27,9 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 	private DetailAdapter detail;
 	private ProgressDialog progress;
 	private int width;
+	private Context context;
 
-	public DetailLoader(DetailAdapter content) {
+	public DetailLoader(DetailAdapter content, Context context) {
 		detail = content;
 		progress = new ProgressDialog(content.getContext());
 		progress.setTitle("Loading");
@@ -39,6 +38,7 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 		progress.show();
 		
 		width = JournWeListActivity.width;
+		this.context = context;
 	}
 
 	@Override
@@ -90,6 +90,10 @@ public class DetailLoader extends AsyncTask<DetailAdapter, Void, Detail> {
 			e1.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+		
+		if (re.equals(null) || re.equals("null")) {
+			re = context.getResources().getString(R.string.no_description);
 		}
 
 		return re;

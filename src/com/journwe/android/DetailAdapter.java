@@ -6,9 +6,11 @@ import java.util.List;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
@@ -42,7 +44,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 		clear();
 		notifyDataSetChanged();
 		
-		new DetailLoader(this).execute(this);
+		new DetailLoader(this, context).execute(this);
 	}
 	
 	public Context getContext() {
@@ -107,9 +109,29 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 			ImageView i = (ImageView) content.findViewById(R.id.image);
 			i.setTag(trip.getImageURL());
 
-			TextView t = (TextView) content.findViewById(R.id.text);
+			final TextView t = (TextView) content.findViewById(R.id.text);
 			t.setTag("http://www.journwe.com/api/json/adventure/"
 					+ trip.getId() + "/info.json");
+			
+			t.setOnClickListener(new OnClickListener() {
+				boolean expanded = false;
+				
+				@Override
+				public void onClick(View v) {
+					if (expanded) {
+						t.setMaxLines(10);
+						t.setEllipsize(TruncateAt.END);
+						expanded = false;
+					}
+					
+					else {
+						t.setMaxLines(Integer.MAX_VALUE);
+						t.setEllipsize(null);
+						expanded = true;
+					}
+					
+				}
+			});
 
 			if (loaded == false) {
 				reload();
