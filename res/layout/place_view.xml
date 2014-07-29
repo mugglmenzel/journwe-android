@@ -106,13 +106,15 @@
                 android:hint="@string/placeHint" />
 
             <Button
+                android:id="@+id/place"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_action_new" />
+                android:background="@drawable/ic_action_new"
+                android:onClick="add" />
         </LinearLayout>
     </LinearLayout>
     

@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,10 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,9 +51,16 @@ public class JournWeDetail extends Activity {
 	private static TextView favDate;
 	private static TextView favPlace;
 	private static SimpleDateFormat dateFormat;
+	private SimpleDateFormat buttonFormat;
 	private static ImageView map;
 	private String bitmapURL;
 	private static LayoutParams ll;
+	private Dialog d;
+	private String dialog;
+	private Date startDate;
+	private Date endDate;
+	private Button startButton;
+	private Button endButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +96,7 @@ public class JournWeDetail extends Activity {
 		}
 
 		dateFormat = new SimpleDateFormat("dd/MM");
+		buttonFormat = new SimpleDateFormat();
 
 		ll = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 	}
@@ -240,6 +254,11 @@ public class JournWeDetail extends Activity {
 		adventurerList = adventurer;
 
 		setAdventurerSize();
+	}
+	
+	public void setButton(Button start, Button end) {
+		startButton = start;
+		endButton = end;
 	}
 	
 	private void setAdventurerSize() {
@@ -421,6 +440,79 @@ public class JournWeDetail extends Activity {
 		Log.i("scroll", "check");
 
 		setColor(5);
+	}
+	
+	public void add(View view) {
+		switch(view.getId()) {
+		case R.id.place:
+			Log.i("add", "place");
+			
+			
+			
+			break;
+		case R.id.date:
+			Log.i("add", "date");
+			
+			if (startDate != null && endDate != null) {
+				trip.addDate(new JournWeDate(startDate, endDate, 0, "false"));
+				
+				new DatePoster().execute(new JournWeDate(startDate, endDate, 0.0, "false"));
+				
+				dateAdapter.notifyDataSetChanged();
+				startDate = null;
+				endDate = null;
+				startButton.setText(R.string.timeStartHint);
+				endButton.setText(R.string.timeEndHint);
+			}
+			
+			break;
+		case R.id.adventurer:
+			Log.i("add", "adventurer");
+			
+			
+			
+			break;
+		}
+	}
+	
+	public void dateClick(View v) {
+		Log.i("dateClick", (String) v.getTag());
+		d = new Dialog((Context) this);
+		d.setContentView(R.layout.date_time_picker);
+		dialog = (String) v.getTag();
+		d.setTitle(dialog);
+		Button ok = (Button) d.findViewById(R.id.ok);
+		// if button is clicked, close the custom dialog
+		ok.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DatePicker datePicker = ((DatePicker) d
+						.findViewById(R.id.datePicker));
+				TimePicker timePicker = ((TimePicker) d
+						.findViewById(R.id.timePicker));
+
+				if (dialog.equals("Start")) {
+					startDate = new Date(datePicker.getYear() - 1900,
+							datePicker.getMonth(), datePicker.getDayOfMonth(),
+							timePicker.getCurrentHour(), timePicker
+									.getCurrentMinute());
+
+					startButton.setText(buttonFormat.format(startDate));
+				}
+
+				else if (dialog.equals("End")) {
+					endDate = new Date(datePicker.getYear() - 1900, datePicker
+							.getMonth(), datePicker.getDayOfMonth(), timePicker
+							.getCurrentHour(), timePicker.getCurrentMinute());
+
+					endButton.setText(buttonFormat.format(endDate));
+				}
+
+				d.dismiss();
+			}
+		});
+
+		d.show();
 	}
 
 	@Override

@@ -101,26 +101,34 @@
             android:orientation="horizontal"
             android:layout_margin="7dp" >
             
-            <EditText
-                android:layout_height="fill_parent"
+            <Button
+                android:id="@+id/startButton"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:hint="@string/timeStartHint" />
-            
-            <EditText
                 android:layout_height="fill_parent"
-                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:hint="@string/timeEndHint" />
+                android:text="@string/timeStartHint"
+                android:onClick="dateClick"
+                android:tag="Start" />
+
+            <Button
+                android:id="@+id/endButton"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/timeEndHint"
+                android:onClick="dateClick"
+                android:tag="End" />
             
             <Button
+                android:id="@+id/date"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_height="30dp"
                 android:layout_width="30dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_action_new" />
+                android:background="@drawable/ic_action_new"
+                android:onClick="add" />
             
         </LinearLayout>
         

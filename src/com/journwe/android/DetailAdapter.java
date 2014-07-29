@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -173,6 +174,7 @@ public class DetailAdapter extends ArrayAdapter<Trip> {
 			detail.setDateView((ListView)content.findViewById(R.id.dateList));
 			detail.setFavDateView((TextView) content.findViewById(R.id.favtime));
 			
+			detail.setButton((Button) content.findViewById(R.id.startButton), (Button) content.findViewById(R.id.endButton));
 		}
 
 		return content;
